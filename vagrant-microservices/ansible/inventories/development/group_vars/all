@@ -1,0 +1,6 @@
+ansible_user: vagrant
+ansible_ssh_host: 127.0.0.1
+gradle_version: 4.1
+portainer_pass: Bgt56yhn$
+mongodb_version: 3.4
+mongodb_patch_version: 1

@@ -1,0 +1,24 @@
+---
+- name: Portainer | docker container start
+  docker_container:
+    name: portainer
+    image: portainer/portainer
+    state: started
+    restart_policy: always
+    ports:
+      - '9000:9000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+- name: Docker | Ensure user can use docker command without sudo
+  user:
+    name: '{{ docker_main_user }}'
+    group: docker
+
+- name: Start Docker Compose file with databases
+  docker_service:
+    project_src: /srv/microservices/ansible/docker/databases
+
+# - name: Start Docker Compose file with projects
+#   docker_service:
+#     project_src: /srv/microservices/ansible/docker/projects

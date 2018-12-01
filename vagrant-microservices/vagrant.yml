@@ -1,0 +1,7 @@
+vagrantfile_api_version: 2
+ip_address: 192.168.10.95
+vagrant_box: geerlingguy/centos7
+vm_name: epcc.unex.dpachecomarroyo.dev
+vm_cpu_count: 2
+vm_memory: 2048
+vm_hostname: epcc.unex.dpachecomarroyo

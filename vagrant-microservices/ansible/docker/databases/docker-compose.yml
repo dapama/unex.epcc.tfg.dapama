@@ -1,0 +1,43 @@
+version: '3'
+services:
+
+  mongo:
+    container_name: mongodb
+    hostname: mongodb
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+
+  couchdb:
+    container_name: couchdb
+    hostname: couchdb
+    image: couchdb 
+    restart: always
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: password
+    ports:
+      - 5984:5984
+
+  # cassandra:
+  #   container_name: apache-cassandra
+  #   hostname: apache-cassandra
+  #   image: cassandra
+  #   restart: always
+  #   environment:
+  #   - CASSANDRA_START_RPC=true
+  #   - CASSANDRA_SEEDS=cassandra0
+  #   - CASSANDRA_CLUSTER_NAME=mtech_cluster
+  #   ports:
+  #     - 9042:9042
+  #     - 9160:9160
+  #     - 7199:7199
+  #     - 8778:8778
+  #   ulimits:
+  #     memlock: -1
+  #     nproc: 32768
+  #     nofile: 100000
