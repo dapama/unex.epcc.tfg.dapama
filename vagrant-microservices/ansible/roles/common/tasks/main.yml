@@ -17,8 +17,8 @@
 
 - name: Start Docker Compose file with databases
   docker_service:
-    project_src: /srv/microservices/ansible/docker/databases
+    project_src: /srv/vagrant-microservices/ansible/docker/databases
 
 # - name: Start Docker Compose file with projects
 #   docker_service:
-#     project_src: /srv/microservices/ansible/docker/projects
+#     project_src: /srv/vagrant-microservices/ansible/docker/projects

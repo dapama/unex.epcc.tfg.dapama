@@ -15,8 +15,8 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
   config.vm.hostname = settings[ 'vm_hostname' ]
   
   config.ssh.insert_key = false
-  config.vm.synced_folder '../microservices/', '/srv/microservices/', id: 'microservices'
-  config.vm.synced_folder '../ftp-service/', '/srv/ftp-service/', id: 'ftp-service'
+  config.vm.synced_folder '../vagrant-microservices/', '/srv/vagrant-microservices/', id: 'microservices'
+  # config.vm.synced_folder '../ftp-service/', '/srv/ftp-service/', id: 'ftp-service'
 
   config.vm.provider 'virtualbox' do | v |
     v.name = settings[ 'vm_name' ]

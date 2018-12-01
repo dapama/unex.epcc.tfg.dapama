@@ -7,6 +7,7 @@
 *.jar
 *.war
 *.ear
+*.vagrant
 *.galaxy_install_info
 vagrant-microservices/ansible/roles/*
 !vagrant-microservices/ansible/roles/common/
