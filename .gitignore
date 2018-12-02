@@ -11,6 +11,7 @@
 *.galaxy_install_info
 vagrant-microservices/ansible/roles/*
 !vagrant-microservices/ansible/roles/common/
+*ftp-data
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
