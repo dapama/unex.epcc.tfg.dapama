@@ -6,8 +6,8 @@ from functools import reduce
 from read_nc import read_vars
 from netCDF4 import Dataset
 
-format_type = "NETCDF3_CLASSIC"
 
+format_type = "NETCDF3_CLASSIC"
 
 # WindSAT
 def extract_data_list_l3(files_list):

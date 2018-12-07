@@ -5,8 +5,8 @@ import shutil
 from netCDF4 import Dataset
 from read_nc import read_vars
 
-format_type = "NETCDF3_CLASSIC"
 
+format_type = "NETCDF3_CLASSIC"
 
 # ASCAT
 def extract_data_list_l2(files_list):
