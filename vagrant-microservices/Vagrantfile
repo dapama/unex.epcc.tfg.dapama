@@ -17,6 +17,7 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
   config.ssh.insert_key = false
   config.vm.synced_folder '../vagrant-microservices/', '/srv/vagrant-microservices/', id: 'microservices'
   config.vm.synced_folder '../ftp-data/', '/srv/ftp-data/', id: 'ftp-data'
+  config.vm.synced_folder '../netcdf-to-json/', '/srv/netcdf-to-json/', id: 'netcdf-to-json'
 
   config.vm.provider 'virtualbox' do | v |
     v.name = settings[ 'vm_name' ]
@@ -39,5 +40,4 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
         zsh_user: 'vagrant'
     }
   end
-
 end
