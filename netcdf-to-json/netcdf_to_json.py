@@ -26,10 +26,9 @@ def transform_data(op, src_path, dst_path):
 
 def get_data_path(op):
     print("Can you select the path where the data is saved? (SRC)\n")
-    src_path = input("SOURCE PATH: ")
+    src_path = 'srv/netcdf-data'
     print("Can you select the path where the data will be saved? (DST)\n")
     dst_path = input("DESTINATION PATH: ")
-    # path = "C:\\Users\\dpach_000\\Desktop\\NetCDF Data\\WindScat"
     if os.path.isdir(src_path) and os.path.isdir(dst_path):
         transform_data(op, src_path, dst_path)
     else:

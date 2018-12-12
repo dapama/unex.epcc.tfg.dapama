@@ -1,7 +1,3 @@
 - src: geerlingguy.pip
-  version: 1.0.0
-
 - src: geerlingguy.docker
-  version: 2.1.0
-
 - src: viasite-ansible.zsh
