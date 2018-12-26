@@ -14,7 +14,7 @@ def transform_data(op, src_path, dst_path):
             # l3_group_json_files_by_days(files_list, dst_path)
         elif op == 2:
             # Calling RapidSCAT / QuikSCAT Method - L2B12
-            # extract_data_list_l2b12(files_list)
+            extract_data_list_l2b12(files_list)
             l2b12_group_json_files_by_days(files_list, dst_path)
         elif op == 3:
             # Calling ASCAT Method - L2
@@ -26,9 +26,11 @@ def transform_data(op, src_path, dst_path):
 
 def get_data_path(op):
     print("Can you select the path where the data is saved? (SRC)\n")
-    src_path = '/srv/netcdf-data/netcdf-files'
+    # src_path = '/srv/ftp-data/netcdf-files/quikscat-l2b12'
+    src_path = '/srv/ftp-data/netcdf-files/rapidscat-l2b12'
     print("Can you select the path where the data will be saved? (DST)\n")
-    dst_path = '/srv/netcdf-data/json-files'
+    # dst_path = '/srv/ftp-data/json-files/quikscat-l2b12'
+    dst_path = '/srv/ftp-data/json-files/rapidscat-l2b12'
     if os.path.isdir(src_path) and os.path.isdir(dst_path):
         transform_data(op, src_path, dst_path)
     else:

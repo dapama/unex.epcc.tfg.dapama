@@ -17,7 +17,8 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
   config.ssh.insert_key = false
   config.vm.synced_folder '../vagrant-microservices/', '/srv/vagrant-microservices/', id: 'microservices'
   config.vm.synced_folder '../netcdf-to-json/', '/srv/netcdf-to-json/', id: 'netcdf-to-json'
-  config.vm.synced_folder '../netcdf-data/', '/srv/netcdf-data/', id: 'netcdf-data'
+  config.vm.synced_folder '../ftp-data/', '/srv/ftp-data/', id: 'ftp-data'
+  config.vm.synced_folder '../api-databases/', '/srv/api-databases/', id: 'api-databases'
 
   config.vm.provider 'virtualbox' do | v |
     v.name = settings[ 'vm_name' ]
@@ -31,8 +32,6 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
     ansible.galaxy_role_file = 'ansible/requirements.yml'
     ansible.galaxy_roles_path = 'ansible/roles'
     ansible.galaxy_command = 'sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force'
-    # ansible.config_file = 'ansible/ansible.cfg'
-    # ansible.install_mode = 'pip'
     ansible.extra_vars = {
         vagrant_ip_address: settings[ 'ip_address' ],
         ansible_ssh_user: 'vagrant',
