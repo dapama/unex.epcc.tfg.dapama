@@ -7,25 +7,24 @@ from read_nc import read_vars
 from netCDF4 import Dataset
 
 
-format_type = "NETCDF3_CLASSIC"
+format_type = 'NETCDF3_CLASSIC'
 
 # WindSAT
-def extract_data_list_l3(files_list):
+def extract_data_list_l3( files_list ):
     for file_i in files_list:
-        with gzip.open(file_i, 'rb') as f_in:
-            with open(file_i[:-3], 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
-                l3_net_cdf_to_json(file_i[:-3])
-            # f_out.close()
+        with gzip.open( file_i, 'rb' ) as f_in:
+            with open( file_i[:-3], 'wb' ) as f_out:
+                shutil.copyfileobj( f_in, f_out )
+                l3_net_cdf_to_json( file_i[:-3] )
         f_in.close()
-        os.remove(file_i[:-3])
+        os.remove( file_i[:-3] )
 
 
-def l3_net_cdf_to_json(file_nc):
+def l3_net_cdf_to_json( file_nc ):
     try:
-        nc = Dataset(file_nc, 'r')
+        nc = Dataset( file_nc, 'r' )
         if nc.file_format == format_type:
-            [vars, var_attr_list, var_data_list] = read_vars(nc)
+            [vars, var_attr_list, var_data_list] = read_vars( nc )
 
             times = var_data_list[2]
             latitudes = var_data_list[0]
@@ -35,8 +34,8 @@ def l3_net_cdf_to_json(file_nc):
             sea_surface_temperature = var_data_list[3]
 
             # flag = True
-            with open(file_nc + '.json', 'w') as outfile:
-                outfile.write("{\n\t" + '"'"data"'"' + " : [\n")
+            with open( file_nc + '.json', 'w' ) as outfile:
+                outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
                 # for i in range(0, len(latitudes)):
                 for i in range(0, len(times)):
                     t = time_to_string(times[i])
@@ -101,8 +100,6 @@ def string_variable(var):
 
 
 def time_to_string(time):
-    print(time)
-    print(type(time))
     time += 347151601
     year = datetime.datetime.fromtimestamp(time).strftime('%Y')
     day = datetime.datetime.fromtimestamp(time).strftime('%j')
