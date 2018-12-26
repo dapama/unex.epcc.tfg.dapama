@@ -35,11 +35,11 @@ def l2b12_net_cdf_to_json(file_nc):
 
             with open(file_nc + '.json', 'w') as outfile:
                 outfile.write("{\n\t" + '"'"data"'"' + " : [\n")
-                # for i in range(0, 5):
-                for i in range(0, len(latitudes)):
+                # for i in range(0, len(latitudes)):
+                for i in range(0, 5):
                     t = time_to_string(times[i])
-                    # for j in range(0, 5):
-                    for j in range(0, len(latitudes[0])):
+                    # for j in range(0, len(latitudes[0])):
+                    for j in range(0, 5):
                         la = "{:0.2f}".format(latitudes[i][j])
                         lo = "{:0.2f}".format(longitudes[i][j])
                         ws = string_variable(wind_speed[i][j])
@@ -50,7 +50,7 @@ def l2b12_net_cdf_to_json(file_nc):
                                       ", " '"'"lon"'"' + ": " + lo + ", " + '"'"wind_speed"'"' ": " + ws +
                                       ", " + '"'"wind_dir"'"' ": " + wd + ", " + '"'"rain"'"' ": " + rr + "},\n")
 
-                outfile.seek(-3, os.SEEK_END)
+                outfile.seek(-2, os.SEEK_END)
                 outfile.truncate()
 
                 outfile.write("\n\t]\n}")
@@ -66,12 +66,16 @@ def l2b12_group_json_files_by_days(files_list, dst_path):
     new_json_files = reduce(lambda x, y: x + [y] if not y in x else x,
                             map(lambda file_i: os.path.basename(os.path.dirname(file_i[:-2] + 'json')), files_list), [])
 
+    print ( 'JSON FILES: ', new_json_files )
+
     for json_file in new_json_files:
-        with open(path + "\\" + json_file + '.json', 'w') as outfile:
+        print( 'JSON NAME: ', json_file )
+        with open(path + "/" + json_file + '.json', 'w') as outfile:
             outfile.write("{\n\t" + '"'"data"'"' + " : [\n")
             # Read all the data days
-            files_by_day = filter(lambda json_d: json_file in json_d,
-                                  map(lambda file_i: file_i[:-2] + 'json', files_list))
+            files_by_day = filter(lambda json_d: '/' + json_file + '/' in json_d, map(lambda file_i: file_i[:-2] + 'json', files_list))
+
+            print ( 'FILES BY DAY: ', files_by_day )
 
             for file_by_day in files_by_day:
                 # print(file_by_day)
@@ -79,11 +83,11 @@ def l2b12_group_json_files_by_days(files_list, dst_path):
                     for line in infile:
                         if line.startswith("\t\t{"):
                             outfile.write(line)
-                outfile.seek(-2, os.SEEK_END)
+                outfile.seek(-1, os.SEEK_END)
                 outfile.write(",\n")
                 os.remove(file_by_day)
 
-            outfile.seek(-3, os.SEEK_END)
+            outfile.seek(-2, os.SEEK_END)
             outfile.truncate()
 
             outfile.write("\n\t]\n}")

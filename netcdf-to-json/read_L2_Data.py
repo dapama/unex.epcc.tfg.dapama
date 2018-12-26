@@ -35,10 +35,10 @@ def l2_net_cdf_to_json(file_nc):
 
             with open(file_nc + '.json', 'w') as outfile:
                 outfile.write("{\n\t" + '"'"data"'"' + " : [\n")
-                # for i in range(0, len(latitudes)):
-                for i in range(0, 10):
-                    # for j in range(0, len(latitudes[0])):
-                    for j in range(0, 10):
+                # for i in range(0, 10):
+                for i in range(0, len(latitudes)):
+                    # for j in range(0, 10):
+                    for j in range(0, len(latitudes[0])):
                         t = time_to_string(times[i][j])
                         la = "{:0.2f}".format(latitudes[i][j])
                         lo = "{:0.2f}".format(longitudes[i][j])

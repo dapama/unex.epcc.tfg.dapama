@@ -11,24 +11,24 @@ def transform_data(op, src_path, dst_path):
         if op == 1:
             # Calling WindSAT Method - L3
             extract_data_list_l3(files_list)
-            l3_group_json_files_by_days(files_list, dst_path)
+            # l3_group_json_files_by_days(files_list, dst_path)
         elif op == 2:
             # Calling RapidSCAT / QuikSCAT Method - L2B12
-            extract_data_list_l2b12(files_list)
+            # extract_data_list_l2b12(files_list)
             l2b12_group_json_files_by_days(files_list, dst_path)
         elif op == 3:
             # Calling ASCAT Method - L2
             extract_data_list_l2(files_list)
-            l2_group_json_files_by_days(files_list, dst_path)
+            # l2_group_json_files_by_days(files_list, dst_path)
     else:
         print("There is not files in the path: " + src_path)
 
 
 def get_data_path(op):
     print("Can you select the path where the data is saved? (SRC)\n")
-    src_path = 'srv/netcdf-data'
+    src_path = '/srv/netcdf-data/netcdf-files'
     print("Can you select the path where the data will be saved? (DST)\n")
-    dst_path = input("DESTINATION PATH: ")
+    dst_path = '/srv/netcdf-data/json-files'
     if os.path.isdir(src_path) and os.path.isdir(dst_path):
         transform_data(op, src_path, dst_path)
     else:
