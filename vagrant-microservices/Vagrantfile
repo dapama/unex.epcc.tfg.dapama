@@ -24,6 +24,7 @@ Vagrant.configure( settings[ 'vagrantfile_api_version' ] ) do | config |
     v.name = settings[ 'vm_name' ]
     v.memory = settings[ 'vm_memory' ]
     v.cpus = settings[ 'vm_cpu_count' ]
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
   end
   
   config.vm.provision 'ansible_local' do | ansible |
