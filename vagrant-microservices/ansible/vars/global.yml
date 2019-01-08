@@ -5,7 +5,7 @@ pip_install_packages:
   
 nodejs_npm_global_packages:
   - name: mongodb
-  - name: express
+  # - name: express
 
 ## Docker post-installation parameters ##
 docker_main_user: 'vagrant'

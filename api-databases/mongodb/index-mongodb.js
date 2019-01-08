@@ -1,26 +1,30 @@
-const MongoClient = require('mongodb').MongoClient;
-const test = require('assert');
+const MongoClient = require('mongodb').MongoClient
+const config = require('./config/database');
 
-const url = require('./config/database').url;
-const dbName = 'test';
 
-MongoClient.connect ( url, function( err, client ) {
+( async function() {
 
-    const db = client.db( dbName );
+  const client = await MongoClient.connect( config.url, { useNewUrlParser: true } );
+  const db = client.db('unex_epcc_tfg');
+  const collection = db.collection('l2b12');
 
-    // Use the admin database for the operation
-    const adminDb = db.admin();
-    
-    // List all the available databases
-    adminDb.listDatabases( function( err, dbs ) {
-      test.equal( null, err );
-      test.ok( dbs.databases.length > 0 );
-      client.close();
-    });
-  });
+  console.log('connected');
 
-// MongoClient.connect( url, function( err, client ) {
-   
-//     const db = client.db( dbName );
-//     client.close();
-// });
+  // collection.deleteMany({})
+  // .then(function() {
+  //     const promises = products.map((product) => {
+  //         console.log(product.name);
+  //         ticketTotal += product.cost();
+  //         return collection.insertOne(product);
+  //     });
+
+  //     return Promise.all(promises);
+  // }).then(function(results) {
+  //     for (let result of results) {
+  //         console.log(result.result);
+  //     }
+  //     console.log("Ticket Total: " + ticketTotal);
+  //     client.close();
+  // });
+
+})();
