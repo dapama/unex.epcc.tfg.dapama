@@ -3,11 +3,5 @@ pip_install_packages:
   - name: docker-compose
   - name: netcdf4
   
-nodejs_npm_global_packages:
-  - name: mongodb
-  # - name: express
-
 ## Docker post-installation parameters ##
 docker_main_user: 'vagrant'
-
-nodejs_version: "8.x"

@@ -6,6 +6,5 @@
   roles:
     - geerlingguy.pip
     - geerlingguy.docker
-    - geerlingguy.nodejs
     - common
     - viasite-ansible.zsh
