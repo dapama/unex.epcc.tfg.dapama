@@ -1,7 +1,7 @@
 
 from pymongo import MongoClient, GEOSPHERE, GEO2D
 
-import os, sys, json
+import os, sys, json, pprint
 sys.path.insert(0, '../utils') 
 import path_functions 
 
@@ -18,11 +18,15 @@ for json_file in json_files_path_list:
 
     if current_collection not in collection_list:
         collection = db[current_collection]
-        collection.ensure_index([( "time", GEO2D )])
+        collection.create_index([( "time", GEO2D )])
+        print( 'Index: ', sorted(list(db.profiles.index_information())) )
+
         with open( json_file ) as f:
             file_data = json.load(f)
 
         collection.insert( file_data )
+
+    # print('Collection list: ', collection_list)
 
 # collection = db['quikscat-l2b12-001']
 # cursor = collection.find({})
@@ -32,19 +36,26 @@ for json_file in json_files_path_list:
 # collection = db['quikscat-l2b12-001']
 
 # -- DROP COLLECTIONS --
-collection_list = db.collection_names()
-for collection in collection_list:
-    db.drop_collection(collection)
-
-# -- PRINT COLLECTIONS --
-print( db.collection_names() )
-
-# -- CHECK COLLECTION INDEXES --
 # collection_list = db.collection_names()
 # for collection in collection_list:
-#     print ( collection.getIndexes() )
+#     db.drop_collection(collection)
 
-# -- INDEXES --
-for index in db.system.indexes.find():
-    print( index )
+# -- PRINT COLLECTIONS --
+# print( db.collection_names() )
 
+# # -- PRINT INDEXES --
+# collection_list = db.collection_names()
+# for current_collection in collection_list:
+#     collection = db[current_collection]
+#     print( 'Index: ', sorted( list( collection.index_information() ) ) )
+
+# -- PRINT DATA --
+# collection = db['quikscat-l2b12-001']
+# cursor = collection.find({})
+# for document in cursor:
+#     print(document)   
+
+# -- QUERYING USING GEOSPATIAL INDEX --
+collection = db['quikscat-l2b12-001']
+for doc in collection.find({"loc": {"$near": [3, 6]}}).limit(3):
+    pprint.pprint(doc)
