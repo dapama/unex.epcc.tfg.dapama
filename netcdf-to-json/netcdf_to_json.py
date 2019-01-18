@@ -28,7 +28,7 @@ def transform_data(op, src_path, dst_path):
         elif op == 5:
             # Calling RapidSCAT / QuikSCAT Method - L2B12
             extract_data_list_l2b12(files_list)
-            l2b12_group_geojson_files_by_days(files_list, dst_path)
+            # l2b12_group_geojson_files_by_days(files_list, dst_path)
         elif op == 6:
             # Calling ASCAT Method - L2
             extract_data_list_l2(files_list)

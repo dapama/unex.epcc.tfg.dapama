@@ -37,19 +37,20 @@ def l2b12_net_cdf_to_geojson(file_nc):
                 outfile.write("{\n\t" + '"'"type"'"' + " : "'"FeatureCollection"'",\n\t" +
                 '"'"features"'"'  + " : [\n")
                 # for i in range(0, len(latitudes)):
-                for i in range(0, 5):
+                for i in range(0, 3):
                     t = time_to_string(times[i])
                     # for j in range(0, len(latitudes[0])):
-                    for j in range(0, 5):
+                    for j in range(0, 3):
                         la = "{:0.2f}".format(latitudes[i][j])
                         lo = "{:0.2f}".format(longitudes[i][j])
                         ws = string_variable(wind_speed[i][j])
                         wd = string_variable(wind_dir[i][j])
                         rr = string_variable(rain_rate[i][j])
 
-                        outfile.write("\t\t{" + '"'"time"'"' + ": " + t + ", " '"'"lat"'"' + ": " + la +
-                                      ", " '"'"lon"'"' + ": " + lo + ", " + '"'"wind_speed"'"' ": " + ws +
-                                      ", " + '"'"wind_dir"'"' ": " + wd + ", " + '"'"rain"'"' ": " + rr + "},\n")
+                        outfile.write("\t\t{ "'"type"'" :  "'"Feature"'", "'"geometry"'": { " +
+                                      ""'"type"'": "'"Point"'", "'"coordinates"'": [" + la + ", " + lo + "] }, " +
+                                      ""'"properties"'": { "'"time"'": " + t + ", "'"wind_speed"'" : " + ws + ", "
+                                      ""'"wind_dir"'": " + wd + ", "'"rain"'": " + rr + "} },\n")
 
                 outfile.seek(-2, os.SEEK_END)
                 outfile.truncate()
