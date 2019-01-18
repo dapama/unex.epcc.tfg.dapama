@@ -73,7 +73,7 @@ def l2b12_group_geojson_files_by_days(files_list, dst_path):
     for json_file in new_json_files:
         print( 'JSON NAME: ', json_file )
         with open(path + "/" + json_file + '.json', 'w') as outfile:
-            outfile.write("{\n\t" + '"'"data"'"' + " : [\n")
+            outfile.write("{\n\t"'"type"'": "'"FeatureCollection"'",\n\t"'"features"'": [\n")
             # Read all the data days
             files_by_day = filter(lambda json_d: '/' + json_file + '/' in json_d, map(lambda file_i: file_i[:-2] + 'json', files_list))
 
