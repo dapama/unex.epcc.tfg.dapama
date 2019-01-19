@@ -9,10 +9,6 @@ import path_functions
 client = MongoClient( 'localhost', 27017 )
 db = client[ 'nfcdata' ]
 
-collection_list = db.collection_names()
-for collection in collection_list:
-    db.drop_collection(collection)
-
 json_files_path_list = path_functions.get_json_files('../../ftp-data/json-files/quikscat-l2b12')
 
 for json_file in json_files_path_list:
@@ -28,22 +24,7 @@ for json_file in json_files_path_list:
         for doc in json_docs['data']:
             collection.insert( doc )
 
-        # with json_docs as file:
-        #     for doc in file:
-        #         # collection.insert( file_data )
-        #         print('DOC: ', doc)
-        #         # file_data = json.load( f )
 
-        
-
-    # print( 'Collection list: ', collection_list )
-
-# collection = db['quikscat-l2b12-001']
-# cursor = collection.find({})
-# for document in cursor:
-#     print(document)
-
-# collection = db['quikscat-l2b12-001']
 
 # -- DROP COLLECTIONS --
 # collection_list = db.collection_names()
@@ -66,9 +47,21 @@ for json_file in json_files_path_list:
 #     print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
 #     print(document)   
 
-# -- QUERYING USING GEOSPATIAL INDEX --
-# collection_list = db.collection_names()
-# for current_collection in collection_list:
-    # for doc in collection.find({"loc": {"$near": [10, 10]}}).limit(3):
-    #     pprint.pprint(doc)
-    # pprint.pprint( collection.find({"loc": {"$near": [10, 10]}}).limit(3) ) 
+# -- SPATIAL QUERYING USING GEOSPATIAL INDEX --
+collection_list = db.collection_names()
+for current_collection in collection_list:
+    collection = db[current_collection]
+    for doc in collection.find( { "loc":{ "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(3):
+        pprint.pprint(doc)
+
+# -- TEMPORAL QUERYING USING GEOSPATIAL INDEX --
+collection_list = db.collection_names()
+for current_collection in collection_list:
+    collection = db[current_collection]
+    for doc in collection.find( { "time": 2009001 } ).limit(3):
+        pprint.pprint(doc)
+
+# collection = db['quikscat-l2b12-001']
+# cursor = collection.find({})
+# for document in cursor:
+#     pprint.pprint( document )
