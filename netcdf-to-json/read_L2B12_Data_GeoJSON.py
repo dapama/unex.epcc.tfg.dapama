@@ -9,7 +9,7 @@ from read_nc import read_vars
 format_type = "NETCDF3_CLASSIC"
 
 # RapidSCAT / QuikSCAT
-def extract_data_list_l2b12(files_list):
+def extract_data_list_l2b12_GeoJSON(files_list):
     for file_i in files_list:
         with gzip.open(file_i, 'rb') as f_in:
             with open(file_i[:-3], 'wb') as f_out:
@@ -63,7 +63,7 @@ def l2b12_net_cdf_to_geojson(file_nc):
         print('not a valid netCDF file')
 
 
-def l2b12_group_geojson_files_by_days(files_list, dst_path):
+def l2b12_group_geojson_files_by_days_GeoJSON(files_list, dst_path):
     path = dst_path
     new_json_files = reduce(lambda x, y: x + [y] if not y in x else x,
                             map(lambda file_i: os.path.basename(os.path.dirname(file_i[:-2] + 'json')), files_list), [])

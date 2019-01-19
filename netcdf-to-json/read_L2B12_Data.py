@@ -1,7 +1,4 @@
-import datetime
-import gzip
-import os
-import shutil
+import datetime, gzip, os, shutil
 from netCDF4 import Dataset
 from read_nc import read_vars
 
@@ -15,7 +12,7 @@ def extract_data_list_l2b12(files_list):
             with open(file_i[:-3], 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
                 l2b12_net_cdf_to_json(file_i[:-3])
-            # f_out.close()
+            f_out.close()
         f_in.close()
         os.remove(file_i[:-3])
 
@@ -41,14 +38,18 @@ def l2b12_net_cdf_to_json(file_nc):
                     # for j in range(0, len(latitudes[0])):
                     for j in range(0, 5):
                         la = "{:0.2f}".format(latitudes[i][j])
-                        lo = "{:0.2f}".format(longitudes[i][j])
+                        lo = "{:0.2f}".format(longitudes[i][j] - 180 )
                         ws = string_variable(wind_speed[i][j])
                         wd = string_variable(wind_dir[i][j])
                         rr = string_variable(rain_rate[i][j])
 
-                        outfile.write("\t\t{" + '"'"time"'"' + ": " + t + ", " '"'"lat"'"' + ": " + la +
-                                      ", " '"'"lon"'"' + ": " + lo + ", " + '"'"wind_speed"'"' ": " + ws +
-                                      ", " + '"'"wind_dir"'"' ": " + wd + ", " + '"'"rain"'"' ": " + rr + "},\n")
+                        outfile.write("\t\t{"'"loc"'": [" + la + ", " + lo + "], " +
+                                      ""'"time"'": " + t + ", "'"wind_speed"'": " + ws +
+                                      ", "'"wind_dir"'": " + wd + ", "'"rain"'": " + rr + "},\n")
+
+                        # outfile.write("\t\t\t{" + '"'"time"'"' + ": " + t + ", " '"'"lat"'"' + ": " + la +
+                        #               ", " '"'"lon"'"' + ": " + lo + ", " + '"'"wind_speed"'"' ": " + ws +
+                        #               ", " + '"'"wind_dir"'"' ": " + wd + ", " + '"'"rain"'"' ": " + rr + "},\n")
 
                 outfile.seek(-2, os.SEEK_END)
                 outfile.truncate()

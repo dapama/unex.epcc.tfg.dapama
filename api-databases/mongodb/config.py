@@ -9,6 +9,10 @@ import path_functions
 client = MongoClient( 'localhost', 27017 )
 db = client[ 'nfcdata' ]
 
+collection_list = db.collection_names()
+for collection in collection_list:
+    db.drop_collection(collection)
+
 json_files_path_list = path_functions.get_json_files('../../ftp-data/json-files/quikscat-l2b12')
 
 for json_file in json_files_path_list:
@@ -63,6 +67,8 @@ for json_file in json_files_path_list:
 #     print(document)   
 
 # -- QUERYING USING GEOSPATIAL INDEX --
-collection = db['quikscat-l2b12-006']
-for doc in collection.find({"loc": {"$near": [10, 10]}}).limit(3):
-    pprint.pprint(doc)
+# collection_list = db.collection_names()
+# for current_collection in collection_list:
+    # for doc in collection.find({"loc": {"$near": [10, 10]}}).limit(3):
+    #     pprint.pprint(doc)
+    # pprint.pprint( collection.find({"loc": {"$near": [10, 10]}}).limit(3) ) 
