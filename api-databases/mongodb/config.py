@@ -18,15 +18,21 @@ for json_file in json_files_path_list:
 
     if current_collection not in collection_list:
         collection = db[current_collection]
-        collection.create_index([( "time", GEO2D )])
-        print( 'Index: ', sorted(list(db.profiles.index_information())) )
+        collection.create_index([( "loc", GEO2D )])
 
-        with open( json_file ) as f:
-            file_data = json.load(f)
+        json_docs = json.load( open( json_file ) )
+        for doc in json_docs['data']:
+            collection.insert( doc )
 
-        collection.insert( file_data )
+        # with json_docs as file:
+        #     for doc in file:
+        #         # collection.insert( file_data )
+        #         print('DOC: ', doc)
+        #         # file_data = json.load( f )
 
-    # print('Collection list: ', collection_list)
+        
+
+    # print( 'Collection list: ', collection_list )
 
 # collection = db['quikscat-l2b12-001']
 # cursor = collection.find({})
@@ -50,12 +56,13 @@ for json_file in json_files_path_list:
 #     print( 'Index: ', sorted( list( collection.index_information() ) ) )
 
 # -- PRINT DATA --
-# collection = db['quikscat-l2b12-001']
+# collection = db['quikscat-l2b12-006']
 # cursor = collection.find({})
 # for document in cursor:
+#     print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
 #     print(document)   
 
 # -- QUERYING USING GEOSPATIAL INDEX --
-collection = db['quikscat-l2b12-001']
-for doc in collection.find({"loc": {"$near": [3, 6]}}).limit(3):
+collection = db['quikscat-l2b12-006']
+for doc in collection.find({"loc": {"$near": [10, 10]}}).limit(3):
     pprint.pprint(doc)
