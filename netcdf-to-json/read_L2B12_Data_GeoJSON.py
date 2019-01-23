@@ -41,14 +41,14 @@ def l2b12_net_cdf_to_geojson(file_nc):
                     t = time_to_string(times[i])
                     # for j in range(0, len(latitudes[0])):
                     for j in range(0, 3):
+                        lo = "{:0.2f}".format(longitudes[i][j] - 180 )
                         la = "{:0.2f}".format(latitudes[i][j])
-                        lo = "{:0.2f}".format(longitudes[i][j])
                         ws = string_variable(wind_speed[i][j])
                         wd = string_variable(wind_dir[i][j])
                         rr = string_variable(rain_rate[i][j])
 
                         outfile.write("\t\t{ "'"type"'" :  "'"Feature"'", "'"geometry"'": { " +
-                                      ""'"type"'": "'"Point"'", "'"coordinates"'": [" + la + ", " + lo + "] }, " +
+                                      ""'"type"'": "'"Point"'", "'"coordinates"'": [" + lo + ", " + la + "] }, " +
                                       ""'"properties"'": { "'"time"'": " + t + ", "'"wind_speed"'" : " + ws + ", "
                                       ""'"wind_dir"'": " + wd + ", "'"rain"'": " + rr + "} },\n")
 

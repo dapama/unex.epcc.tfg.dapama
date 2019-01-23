@@ -32,7 +32,7 @@ for json_file in json_files_path_list:
 #     db.drop_collection(collection)
 
 # -- PRINT COLLECTIONS --
-# print( db.collection_names() )
+print( db.collection_names() )
 
 # # -- PRINT INDEXES --
 # collection_list = db.collection_names()
@@ -41,20 +41,20 @@ for json_file in json_files_path_list:
 #     print( 'Index: ', sorted( list( collection.index_information() ) ) )
 
 # -- PRINT DATA --
-# collection = db['quikscat-l2b12-006']
-# cursor = collection.find({})
-# for document in cursor:
-#     print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
-#     print(document)   
+collection = db['quikscat-l2b12-006']
+cursor = collection.find({})
+for document in cursor:
+    print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
+    print(document)   
 
-# -- SPATIAL QUERYING USING GEOSPATIAL INDEX --
+# -- SPATIAL QUERYING USING 2D INDEX
 collection_list = db.collection_names()
 for current_collection in collection_list:
     collection = db[current_collection]
     for doc in collection.find( { "loc":{ "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(3):
         pprint.pprint(doc)
 
-# -- TEMPORAL QUERYING USING GEOSPATIAL INDEX --
+# -- SPATIAL QUERYING USING 2D INDEX
 collection_list = db.collection_names()
 for current_collection in collection_list:
     collection = db[current_collection]
