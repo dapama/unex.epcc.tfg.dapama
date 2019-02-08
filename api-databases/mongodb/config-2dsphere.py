@@ -41,31 +41,60 @@ print( db.collection_names() )
 #     print( 'Index: ', sorted( list( collection.index_information() ) ) )
 
 # -- PRINT DATA --
-# collection = db['quikscat-l2b12-006']
+# collection = db['GeoJSON-quikscat-l2b12-005']
 # cursor = collection.find({})
 # for document in cursor:
 #     print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
 #     print(document)   
 
 # -- SPATIAL QUERYING USING 2D INDEX
-collection_list = db.collection_names()
-for current_collection in collection_list:
-    collection = db[current_collection]
-#     for doc in collection.find( { "geometry":{ "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(1):
-    for doc in collection.find( { "geometry": { "$geoWithin" : { "$geometry" : { type : "Polygon" , "coordinates" : [ [
-                                          [ 0 , 0 ] ,
-                                          [ 3 , 6 ] ,
-                                          [ 6 , 1 ] ,
-                                          [ 0 , 0 ]
-                                        ] ] } } } } ).limit(1):
-        pprint.pprint(doc)
+# collection_list = db.collection_names()
+# for current_collection in collection_list:
+#     collection = db[ current_collection ]
 
-# -- SPATIAL QUERYING USING 2D INDEX
+#     for doc in collection.find( 
+#             { "geometry": { 
+#                     "$geoWithin": {
+#                         "$geometry" : {
+#                                 "type": "Polygon" , 
+#                                         "coordinates" : [ 
+#                                         [
+#                                                 [-77.49, -89.70],
+#                                                 [0.00, 0.00],
+#                                                 [10.00, 10.00],
+#                                                 [-77.49, -89.70]
+#                                         ]
+#                                 ]
+#                 } } } } ):
+#         pprint.pprint( doc )
+
+# -- TEMPORAL QUERYING USING 2D INDEX
 # collection_list = db.collection_names()
 # for current_collection in collection_list:
 #     collection = db[current_collection]
 #     for doc in collection.find( { "properties.time": 2009002 } ).limit(3):
 #         pprint.pprint(doc)
+
+# -- TEMPORAL-SPATIAL QUERYING USING 2D INDEX
+collection_list = db.collection_names()
+for current_collection in collection_list:
+    collection = db[ current_collection ]
+
+    for doc in collection.find( 
+            { "geometry": { 
+                    "$geoWithin": {
+                        "$geometry" : {
+                                "type": "Polygon" , 
+                                        "coordinates" : [ 
+                                        [
+                                                [-77.49, -89.70],
+                                                [0.00, 0.00],
+                                                [10.00, 10.00],
+                                                [-77.49, -89.70]
+                                        ]
+                                ]
+                } } }, "properties.time": 2009003 } ):
+        pprint.pprint( doc )
 
 # collection = db['quikscat-l2b12-001']
 # cursor = collection.find({})

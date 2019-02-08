@@ -51,10 +51,10 @@ for document in cursor:
 collection_list = db.collection_names()
 for current_collection in collection_list:
     collection = db[current_collection]
-    for doc in collection.find( { "loc":{ "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(3):
+    for doc in collection.find( { "loc": { "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(3):
         pprint.pprint(doc)
 
-# -- SPATIAL QUERYING USING 2D INDEX
+# -- TEMPORAL QUERYING USING 2D INDEX
 collection_list = db.collection_names()
 for current_collection in collection_list:
     collection = db[current_collection]
