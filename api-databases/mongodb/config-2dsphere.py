@@ -48,32 +48,32 @@ print( db.collection_names() )
 #     print(document)   
 
 # -- SPATIAL QUERYING USING 2D INDEX
-# collection_list = db.collection_names()
-# for current_collection in collection_list:
-#     collection = db[ current_collection ]
+collection_list = db.collection_names()
+for current_collection in collection_list:
+    collection = db[ current_collection ]
 
-#     for doc in collection.find( 
-#             { "geometry": { 
-#                     "$geoWithin": {
-#                         "$geometry" : {
-#                                 "type": "Polygon" , 
-#                                         "coordinates" : [ 
-#                                         [
-#                                                 [-77.49, -89.70],
-#                                                 [0.00, 0.00],
-#                                                 [10.00, 10.00],
-#                                                 [-77.49, -89.70]
-#                                         ]
-#                                 ]
-#                 } } } } ):
-#         pprint.pprint( doc )
+    for doc in collection.find( 
+            { "geometry": { 
+                    "$geoWithin": {
+                        "$geometry" : {
+                                "type": "Polygon" , 
+                                        "coordinates" : [ 
+                                        [
+                                                [-77.49, -89.70],
+                                                [0.00, 0.00],
+                                                [10.00, 10.00],
+                                                [-77.49, -89.70]
+                                        ]
+                                ]
+                } } } } ):
+        pprint.pprint( doc )
 
 # -- TEMPORAL QUERYING USING 2D INDEX
-# collection_list = db.collection_names()
-# for current_collection in collection_list:
-#     collection = db[current_collection]
-#     for doc in collection.find( { "properties.time": 2009002 } ).limit(3):
-#         pprint.pprint(doc)
+collection_list = db.collection_names()
+for current_collection in collection_list:
+    collection = db[current_collection]
+    for doc in collection.find( { "properties.time": 2009002 } ).limit(3):
+        pprint.pprint(doc)
 
 # -- TEMPORAL-SPATIAL QUERYING USING 2D INDEX
 collection_list = db.collection_names()

@@ -41,25 +41,28 @@ print( db.collection_names() )
 #     print( 'Index: ', sorted( list( collection.index_information() ) ) )
 
 # -- PRINT DATA --
-collection = db['quikscat-l2b12-006']
-cursor = collection.find({})
-for document in cursor:
-    print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
-    print(document)   
+# collection = db['quikscat-l2b12-006']
+# cursor = collection.find({})
+# for document in cursor:
+#     print('\n - - - - - - - DOCUMENTO - - - - - - - \n')
+#     print(document)   
 
 # -- SPATIAL QUERYING USING 2D INDEX
 collection_list = db.collection_names()
 for current_collection in collection_list:
     collection = db[current_collection]
-    for doc in collection.find( { "loc": { "$geoWithin": { "$box": [ [ -180 , -180 ], [ 180 , 180 ] ] } } } ).limit(3):
+    for doc in collection.find( { "loc": { "$geoWithin": { "$box": [ [-77.49, -89.70], [0.00, 0.00] ] } } } ).limit(3):
         pprint.pprint(doc)
 
 # -- TEMPORAL QUERYING USING 2D INDEX
-collection_list = db.collection_names()
-for current_collection in collection_list:
-    collection = db[current_collection]
-    for doc in collection.find( { "time": 2009001 } ).limit(3):
-        pprint.pprint(doc)
+# collection_list = db.collection_names()
+# for current_collection in collection_list:
+#     collection = db[current_collection]
+#     for doc in collection.find( { "time": 2009001 } ).limit(3):
+#         pprint.pprint(doc)
+
+# -- TEMPORAL-SPATIAL QUERYING USING 2D INDEX
+
 
 # collection = db['quikscat-l2b12-001']
 # cursor = collection.find({})
