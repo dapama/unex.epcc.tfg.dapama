@@ -26,8 +26,9 @@ def net_cdf_to_json( file_nc, type_of_file ):
             times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature = \
                 read_net_cdf_data ( var_data_list, type_of_file )
 
-            create_json_from_l3_data\
-                ( times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature, file_nc )
+            if type_of_file == 'L3':
+                create_json_from_l3_data\
+                    ( times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature, file_nc )
 
         nc.close()
     except IOError:

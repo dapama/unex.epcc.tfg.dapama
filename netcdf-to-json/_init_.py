@@ -1,20 +1,17 @@
 import os
 from path_functions import get_files_data
-from read_L3_Data import extract_data_list_l3, l3_group_json_files_by_days
-from read_L2B12_Data import extract_data_list_l2b12, l2b12_group_json_files_by_days
-from read_L2B12_Data_GeoJSON import extract_data_list_l2b12_GeoJSON, l2b12_group_geojson_files_by_days_GeoJSON
-from read_L2_Data import extract_data_list_l2, l2_group_json_files_by_days
 from convert_netcdf_to_json import extract_data
+from group_files import group_json_files_by_days
 
 def transform_data( op, src_path, dst_path ):
     files_list = []
-    get_files_data(src_path, files_list, ".gz")
+    get_files_data( src_path, files_list, ".gz" )
 
     if len(files_list) > 0:        
         if op == 1:
             # Calling WindSAT Method - L3
             extract_data( files_list, 'L3' )
-            # l3_group_json_files_by_days( files_list, dst_path )
+            group_json_files_by_days( files_list, dst_path )
         
         # elif op == 2:
         #     # Calling RapidSCAT / QuikSCAT Method - L2B12
