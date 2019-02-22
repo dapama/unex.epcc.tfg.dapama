@@ -14,7 +14,7 @@ def transform_data( op, src_path, dst_path ):
         if op == 1:
             # Calling WindSAT Method - L3
             extract_data( files_list, 'L3' )
-            l3_group_json_files_by_days( files_list, dst_path )
+            # l3_group_json_files_by_days( files_list, dst_path )
         
         # elif op == 2:
         #     # Calling RapidSCAT / QuikSCAT Method - L2B12

@@ -1,5 +1,8 @@
 
-def create_json_from_l3_data():
+import datetime, gzip, os, shutil
+
+
+def create_json_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature, file_nc ):
     with open( file_nc + '.json', 'w' ) as outfile:
         outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
         # for i in range(0, len(latitudes)):
@@ -24,3 +27,18 @@ def create_json_from_l3_data():
 
         outfile.write( "\n\t]\n}" )
     outfile.close()
+
+
+def string_variable(var):
+    if str(var) == "--":
+        return "0.00"
+    else:
+        return "{:0.2f}".format(var)
+
+
+def time_to_string(time):
+    time += 347151601
+    year = datetime.datetime.fromtimestamp(time).strftime('%Y')
+    day = datetime.datetime.fromtimestamp(time).strftime('%j')
+    date = str(int(year) * 1000 + int(day))
+    return date

@@ -99,16 +99,4 @@ def l3_group_json_files_by_days(files_list, dst_path):
             outfile.write("\n\t]\n}")
 
 
-def string_variable(var):
-    if str(var) == "--":
-        return "0.00"
-    else:
-        return "{:0.2f}".format(var)
 
-
-def time_to_string(time):
-    time += 347151601
-    year = datetime.datetime.fromtimestamp(time).strftime('%Y')
-    day = datetime.datetime.fromtimestamp(time).strftime('%j')
-    date = str(int(year) * 1000 + int(day))
-    return date
