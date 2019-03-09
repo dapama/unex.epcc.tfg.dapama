@@ -1,6 +1,6 @@
 
 # --------------------------------------------------
-# read and return global_attributes
+#   Read and return global_attributes
 # --------------------------------------------------
 def read_global_attr(nc_file):
     attr_list = []
@@ -14,7 +14,7 @@ def read_global_attr(nc_file):
 
 
 # --------------------------------------------------
-# read and return variables and their attributes
+#   Read and return variables and their attributes
 # --------------------------------------------------
 def read_vars(nc_file):
     var_attr_list = []

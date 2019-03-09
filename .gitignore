@@ -22,3 +22,6 @@ geojson-files
 json-files
 *.nc.gz
 *.nc.gz.md5
+*.nc
+*.nc.md5
+
