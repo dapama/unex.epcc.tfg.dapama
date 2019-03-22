@@ -2,11 +2,12 @@ import os
 
 
 def group_json_files_by_days( files_list, path ):
-    
+
     new_json_files = reduce( lambda x, y: x + [y] if not y in x else x,
                         map( lambda file_i: os.path.basename( os.path.dirname( file_i[:-2] + 'json' ) ), files_list ), [] )
 
     for json_file in new_json_files:
+
         with open( path + "/" + json_file + '.json', 'w' ) as outfile:
             outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
             

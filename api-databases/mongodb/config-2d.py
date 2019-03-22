@@ -1,13 +1,7 @@
 
 from pymongo import MongoClient, GEOSPHERE, GEO2D
 
-import os, sys, json, pprint
-sys.path.insert(0, '../utils') 
-import path_functions 
 
-
-client = MongoClient( 'localhost', 27017 )
-db = client[ 'nfcdata' ]
 
 json_files_path_list = path_functions.get_json_files('../../ftp-data/json-files/quikscat-l2b12')
 
@@ -23,6 +17,9 @@ for json_file in json_files_path_list:
         json_docs = json.load( open( json_file ) )
         for doc in json_docs['data']:
             collection.insert( doc )
+
+
+
 
 
 
@@ -70,3 +67,4 @@ for current_collection in collection_list:
     collection = db[current_collection]
     for doc in collection.find( { "loc": { "$geoWithin": { "$box": [ [-77.49, -89.70], [30.00, 0.00] ] } }, "time": 2009001 } ).limit(3):
         pprint.pprint(doc)
+
