@@ -13,8 +13,7 @@ def init():
            "\t0. Exit\n" )
 
     op = input()
-    print( os.environ[ 'HOME' ] )
 
-    # database_configuration( port, client_name )
+    database_configuration( 27017, 'netcdf_data' )
 
 init()

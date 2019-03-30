@@ -5,7 +5,7 @@ import path_functions
 
 def database_configuration( port, client_name ):
 
-    client = MongoClient( 'localhost', 27017 )
-    db = client[ 'nfcdata' ]
+    client = MongoClient( 'localhost', port )
+    db = client[ client_name ]
 
     return db
