@@ -10,10 +10,14 @@ def init():
            "\t4. Spatial Querying using 2D Index\n"
            "\t5. Temporal Querying using 2D Index\n"
            "\t6. Temporal-Spatial Querying using 2D Index\n"
+           "\t7. Spatial Querying using 2D Sphere Index\n"
+           "\t8. Temporal Querying using 2D Sphere Index\n"
+           "\t9. Temporal-Spatial Querying using 2D Sphere Index\n"
            "\t0. Exit\n" )
 
     op = input()
+    db = database_configuration( 27017, 'netcdf_data' )
 
-    database_configuration( 27017, 'netcdf_data' )
+    operations( op, db )
 
 init()
