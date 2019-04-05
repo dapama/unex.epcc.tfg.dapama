@@ -20,6 +20,14 @@ services:
     ports:
       - 5984:5984
 
+  couchbase:
+    container_name: couchbase
+    hostname: couchbase
+    image: couchbase
+    restart: always
+    ports:
+      - 8091:8019
+
   # cassandra:
   #   container_name: apache-cassandra
   #   hostname: apache-cassandra
