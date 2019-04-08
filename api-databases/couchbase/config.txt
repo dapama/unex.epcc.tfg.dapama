@@ -1,1 +1,11 @@
-export PATH=$PATH:/usr/local/go/bin
+$ export PATH=$PATH:/usr/local/go/bin
+$ go get gopkg.in/couchbase/gocb.v1
+
+# Only needed during first-time setup:
+wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-4-x86_64.rpm
+sudo rpm -iv couchbase-release-1.0-4-x86_64.rpm
+# Will install or upgrade existing packages
+sudo yum install libcouchbase-devel libcouchbase2-bin gcc gcc-c++
+
+https://docs.couchbase.com/c-sdk/2.10/relnotes-c-sdk.html
+https://docs.couchbase.com/python-sdk/2.5/start-using-sdk.html
