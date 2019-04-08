@@ -18,6 +18,19 @@
   docker_service:
     project_src: /srv/vagrant-microservices/ansible/docker/databases
 
-# - name: Start Docker Compose file with projects
-#   docker_service:
-#     project_src: /srv/vagrant-microservices/ansible/docker/projects
+#Contains orders to download CouchBase and Install it using Pip
+
+- name: Download LibCouchBase
+  command: sudo wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-4-x86_64.rpm
+
+- name: Allow permissions
+  command: sudo rpm -iv couchbase-release-1.0-4-x86_64.rpm
+
+- name: Install LibCouchBases
+  command: sudo yum install libcouchbase-devel libcouchbase2-bin gcc gcc-c++
+
+- name: Install Python-dev
+  command: sudo yum install gcc gcc-c++ python-devel python-pip
+
+- name: Install Couchbase
+  command: sudo pip install couchbase

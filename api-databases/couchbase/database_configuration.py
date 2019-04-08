@@ -6,3 +6,6 @@ cluster = Cluster('couchbase://localhost:8091')
 authenticator = PasswordAuthenticator('admin', 'Bgt56yhn$')
 cluster.authenticate(authenticator)
 cb = cluster.open_bucket('netcdf')
+value = cb.get('1').value
+
+print value
