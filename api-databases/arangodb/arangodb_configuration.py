@@ -1,6 +1,10 @@
 
 from arango import ArangoClient
 
+"""
+https://buildmedia.readthedocs.org/media/pdf/python-driver-for-arangodb/3.12.1/python-driver-for-arangodb.pdf
+
+"""
 
 def database_configuration( port, database_name ):
 
