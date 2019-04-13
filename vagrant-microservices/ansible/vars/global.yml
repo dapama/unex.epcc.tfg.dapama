@@ -3,7 +3,8 @@ pip_install_packages:
   - name: docker-compose
   - name: netcdf4
   - name: pymongo
-  
+  - name: python-arango
+
 ## Docker post-installation parameters ##
 docker_main_user: 'vagrant'
 

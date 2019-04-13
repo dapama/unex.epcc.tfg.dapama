@@ -67,7 +67,7 @@ def init():
           "\t5. L2B12 from RapidSCAT / QuikSCAT - GEOJSON FILES\n"
           "\t6. L2 from ASCAT - GEOJSON FILES\n" )
 
-    op = 2
+    op = 5
     get_data_path( op )
 
 

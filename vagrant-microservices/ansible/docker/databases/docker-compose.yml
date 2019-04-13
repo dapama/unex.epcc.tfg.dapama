@@ -9,16 +9,15 @@ services:
     ports:
       - 27017:27017
 
-  couchdb:
-    container_name: couchdb
-    hostname: couchdb
-    image: couchdb 
+  arangodb:
+    container_name: arangodb
+    hostname: arangodb
+    image: arangodb 
     restart: always
-    environment:
-      COUCHDB_USER: admin
-      COUCHDB_PASSWORD: password
     ports:
-      - 5984:5984
+      - 8529:8529
+    environment:
+      - ARANGO_NO_AUTH=1
 
   couchbase:
     container_name: couchbase

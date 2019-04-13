@@ -1,5 +1,4 @@
 - src: geerlingguy.pip
 - src: geerlingguy.docker
 - src: geerlingguy.nodejs
-- src: andrewrothstein.go
 - src: viasite-ansible.zsh

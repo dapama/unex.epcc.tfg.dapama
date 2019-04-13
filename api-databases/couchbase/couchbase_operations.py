@@ -13,6 +13,9 @@ def operations( op, cb ):
     elif op == 2:
         # Insert data (JSON or GEOJSON) into any Bucket
         insert_data( cb )
+    elif op == 3:
+        # Create N1QL index into a Bucket
+        create_index( cb )
 
 
 def print_bucket_documents( cb ):
@@ -64,3 +67,6 @@ def insert_data( cb ):
             rv = cb.insert( index, doc )
             print rv
         
+
+def create_index( cb ):
+    cb.n1ql_query('CREATE PRIMARY INDEX ON TFG_NetCDF').execute()

@@ -67,16 +67,16 @@ def insert_data( db ):
         return
 
     if data_type == 1:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format-files + '/windsat-l3' )
+        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/windsat-l3' )
         data_type = 'WINDSCAT'
     elif data_type == 2:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/json-files/quikscat-l2b12' )
+        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/quikscat-l2b12' )
         data_type = 'QUIKSCAT'
     elif data_type == 3:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/json-files/rapidscat-l2b12' )
+        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/rapidscat-l2b12' )
         data_type = 'RAPIDSCAT'
     elif data_type == 4:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/json-files/ascat-l2' )
+        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/ascat-l2' )
         data_type = 'ASCAT'
     else:
         return

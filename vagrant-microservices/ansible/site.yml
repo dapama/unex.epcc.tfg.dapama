@@ -8,5 +8,4 @@
     - geerlingguy.docker
     - geerlingguy.nodejs
     - common
-    - andrewrothstein.go
     - viasite-ansible.zsh
