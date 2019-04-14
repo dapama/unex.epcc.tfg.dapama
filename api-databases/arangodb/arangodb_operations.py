@@ -91,4 +91,5 @@ def temporal_spatial_querying( db ):
         collection = db.collection( current_collection['name'] )
 
         for doc in collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] ):
-            pprint.pprint( doc )
+            if doc['time'] == 2008366:
+                pprint.pprint( doc )
