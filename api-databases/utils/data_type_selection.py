@@ -13,8 +13,8 @@ def data_type_selection( ):
     data_type = input()
 
     print( "What kind of files do you want to insert?\n" )
-    print( "\t1. JSON Files - 2D index\n"
-           "\t2. GEOJSON Files - 2d Sphere index\n" )
+    print( "\t1. JSON Files\n"
+           "\t2. GEOJSON Files\n" )
 
     files_format = input()
 

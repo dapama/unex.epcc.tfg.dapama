@@ -10,8 +10,8 @@ import data_type_selection
 def operations( op, db ):
 
     if op == 1:
-        # Print Document from an specific Collection
-        print_collection_documents( db )
+        # Retrieve all Collection
+        print_all_collections( db )
     elif op == 2:
         # Drop All Collections
         drop_collections( db )
@@ -24,14 +24,31 @@ def operations( op, db ):
     elif op == 5:
         # Temporal Querying using GEO Index
         temporal_querying( db )
+    elif op == 6:
+        # Temporal-Spatial Querying using GEO Index
+        temporal_spatial_querying( db )
 
 
-def print_bucket_documents( db ):
-    print 'PRINT COLLECTIONS'
+def retrieve_collections( db ):
+    return list( filter ( lambda collection: collection['name'][0] != "_", db.collections() ) )
+
+
+def print_all_collections( db ):
+    print 'Collection List: \n'
+    for collection in retrieve_collections( db ):
+        print collection['name']
 
 
 def drop_collections( db ):
-    print 'DELETE COLLECTIONS'
+    collection_list = retrieve_collections( db )
+
+    if not collection_list:
+        print 'Currently no collections exist.'
+    else:
+        for current_collection in collection_list:
+            db.delete_collection( current_collection['name'] )
+        print 'All collections deleted.'
+
 
 
 def insert_data( db ):
@@ -46,7 +63,7 @@ def insert_data( db ):
         else:
             collection = db.create_collection( current_collection )
             collection.add_geo_index( fields = [ 'loc' ] )
-            collection.add_hash_index( fields = [ 'name' ] )
+            collection.add_hash_index( fields = [ 'time' ] )
 
         json_docs = json.load( open( json_file ) )
         for doc in json_docs[ 'data' ]:
@@ -54,18 +71,24 @@ def insert_data( db ):
 
 
 def spatial_querying( db ):
-    collection_list = db.collections()
-    for current_collection in collection_list:
+   for current_collection in retrieve_collections( db ):
         collection = db.collection( current_collection['name'] )
-        
-        for doc in collection.find_in_box( -77.49, -89.70, 0.00, 0.00, 0, 0):
+           
+        for doc in collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] ):
             pprint.pprint( doc )
         
 
 def temporal_querying( db ):
-    collection_list = db.collections()
-    for current_collection in collection_list:
+    for current_collection in retrieve_collections( db ):
         collection = db.collection( current_collection['name'] )
 
         for doc in collection.find({ 'time': 2008366 }):
+            pprint.pprint( doc )
+
+        
+def temporal_spatial_querying( db ):
+    for current_collection in retrieve_collections( db ):
+        collection = db.collection( current_collection['name'] )
+
+        for doc in collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] ):
             pprint.pprint( doc )
