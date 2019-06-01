@@ -4,6 +4,8 @@ pip_install_packages:
   - name: netcdf4
   - name: pymongo
   - name: python-arango
+  - name: psycopg2
+  - name: cassandra-driver
 
 ## Docker post-installation parameters ##
 docker_main_user: 'vagrant'

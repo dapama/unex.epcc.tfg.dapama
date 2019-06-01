@@ -31,6 +31,22 @@ services:
       - 8094:8094
       - 11210:11210
 
+  cassandra:
+    container_name: cassandra
+    hostname: cassandra
+    image: cassandra
+    restart: always
+    ports:
+      - 9042:9042
+
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: mdillon/postgis
+    restart: always
+    ports:
+      - 5432:5432
+
   # cassandra:
   #   container_name: apache-cassandra
   #   hostname: apache-cassandra
