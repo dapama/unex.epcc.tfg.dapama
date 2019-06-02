@@ -4,7 +4,8 @@ pip_install_packages:
   - name: netcdf4
   - name: pymongo
   - name: python-arango
-  - name: psycopg2
+  # sudo yum install python-devel postgresql-devel
+  # - name: psycopg2 
   - name: cassandra-driver
 
 ## Docker post-installation parameters ##
