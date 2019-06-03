@@ -1,7 +1,7 @@
 
 import os
-from arangodb_configuration import database_configuration
-from arangodb_operations import operations
+from cassandra_configuration import database_configuration
+from cassandra_operations import operations
 
 def init():
    
@@ -11,7 +11,7 @@ def init():
    while op != 0:
 
       print( "\n\n\nWhat process do you want to execute?\n" )
-      print( "\t1. Retrieve all Collections\n"
+      print( "\t1. Create Table\n"
             "\t2. Drop all Collections\n"
             "\t3. Insert Data\n"
             "\t4. Spatial Querying using GEO Index\n"
@@ -20,9 +20,9 @@ def init():
             "\t0. Exit\n" )
 
       op = input()
-      db = database_configuration( 8529, 'netcdf' )
+      session = database_configuration( )
    
-      operations( op, db )
+      operations( op, session )
    
    print( "Bye!\n" )
 
