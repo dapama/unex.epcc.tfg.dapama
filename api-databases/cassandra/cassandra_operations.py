@@ -64,29 +64,22 @@ def insert_data( session ):
                 if line != '[' and line != ']':
                     if ( line.endswith(',') ):
                         line = line[:-1]
-                    print( line )
+                    doc = json.loads( line )
+
+                    session.execute(
+                        """
+                        INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature)
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        ( str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], doc['wind_speed'], 
+                            doc['rain_rate'], doc['surface_temperature'] 
+                        )
+                    )
+
                     line = fp.readline().strip()
                     cnt += 1
                 else:
                     line = fp.readline().strip()
-
-        # parser = ijson.parse( open( json_file, 'r' ))
-        
-        # json_docs = json.load( open( json_file ) )
-        # for doc in json_docs[ 'data' ]:
-
-        #     print( doc['loc'][0] + doc['loc'][1], doc['time'], doc['wind_speed'], 
-        #             doc['rain_rate'], doc['surface_temperature'] )
-
-        #     session.execute(
-        #         """
-        #         INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature)
-        #         VALUES (%s, %s, %s, %s, %s)
-        #         """,
-        #         ( str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], doc['wind_speed'], 
-        #             doc['rain_rate'], doc['surface_temperature'] 
-        #         )
-        #     )
 
     
 def retrieve_data( session ):
