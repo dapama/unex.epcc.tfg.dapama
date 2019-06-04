@@ -8,6 +8,8 @@ First to all, it's necessary to create an user-admin from your local browser int
      and a new bucket in which to keep save the documents. Of course the input configuration in this python 
      file must be the same. When you configure the Cluster properties, you could disable analytics options 
      to save some memory.
+
+     If you want to add a geospatial index, you need to create it inside the Couchbase console.
 """
 
 couchbase_endpoint          = 'couchbase://localhost:8091'

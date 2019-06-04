@@ -12,11 +12,9 @@ def init():
 
       print( "\n\n\nWhat process do you want to execute?\n" )
       print( "\t1. Create Table\n"
-            "\t2. Drop all Collections\n"
+            "\t2. Drop Table\n"
             "\t3. Insert Data\n"
-            "\t4. Spatial Querying using GEO Index\n"
-            "\t5. Temporal Querying using GEO Index\n"
-            "\t6. Temporal-Spatial Querying using GEO Index\n"
+            "\t4. Retrieve Data\n"
             "\t0. Exit\n" )
 
       op = input()
