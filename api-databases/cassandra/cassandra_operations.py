@@ -54,18 +54,22 @@ def drop_table( session ):
 def insert_data( session ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
+    cnt = 1
 
     for json_file in json_files_path_list:
-                
-        # df = pd.read_json( json_file )
-        # print( df )
 
+        with open( json_file ) as fp:  
+            line = fp.readline().strip()
+            while line:
+                if line != '[' and line != ']':
+                    if ( line.endswith(',') ):
+                        line = line[:-1]
+                    print( line )
+                    line = fp.readline().strip()
+                    cnt += 1
+                else:
+                    line = fp.readline().strip()
 
-        with open( json_file, 'r' ) as f:
-            parser = ijson.parse( f )
-            for prefix, event, value in parser:
-                print( prefix, event, value )
-        
         # parser = ijson.parse( open( json_file, 'r' ))
         
         # json_docs = json.load( open( json_file ) )

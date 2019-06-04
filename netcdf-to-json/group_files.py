@@ -9,7 +9,7 @@ def group_json_files_by_days( files_list, path ):
     for json_file in new_json_files:
 
         with open( path + "/" + json_file + '.json', 'w' ) as outfile:
-            outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
+            outfile.write( "[\n" )
             
             files_by_day = filter( lambda json_d: '/' + json_file + '/' in json_d, 
                             map( lambda file_i: file_i[:-2] + 'json', files_list ) )
@@ -17,7 +17,7 @@ def group_json_files_by_days( files_list, path ):
             for file_by_day in files_by_day:
                 with open( file_by_day, 'r' ) as infile:
                     for line in infile:
-                        if line.startswith( "\t\t{" ):
+                        if line.startswith( "\t{" ):
                             outfile.write( line )
                             
                 outfile.seek( -1, os.SEEK_END )
@@ -27,4 +27,4 @@ def group_json_files_by_days( files_list, path ):
             outfile.seek( -2, os.SEEK_END )
             outfile.truncate()
 
-            outfile.write( "\n\t]\n}" )
+            outfile.write( "\n]" )

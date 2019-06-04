@@ -5,7 +5,7 @@ import datetime, gzip, os, shutil
 def create_json_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature, file_nc ):
     
     with open( file_nc + '.json', 'w' ) as outfile:
-        outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
+        outfile.write( "[\n" )
 
         for i in range( 0, len( times ) ):
             t = time_to_string( times[i] )
@@ -20,7 +20,7 @@ def create_json_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rat
                     rr = string_variable( rain_rate[i][j][k] )
                     sst = string_variable( sea_surface_temperature[i][j][k] )
 
-                    outfile.write( "\t\t{"'"loc"'": [" + lo + ", " + la + "], " +
+                    outfile.write( "\t{"'"loc"'": [" + lo + ", " + la + "], " +
                                   ""'"time"'": " + t + ", "'"wind_speed"'": " + ws +
                                   ", "'"rain_rate"'": " + rr + ", " + 
                                   '"'"surface_temperature"'"' ": " + sst + "},\n" )
@@ -28,7 +28,7 @@ def create_json_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rat
         outfile.seek(-2, os.SEEK_END)
         outfile.truncate()
 
-        outfile.write("\n\t]\n}")
+        outfile.write("\n]")
     outfile.close()
 
 
