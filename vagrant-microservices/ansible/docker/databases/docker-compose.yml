@@ -42,11 +42,10 @@ services:
   postgres:
     container_name: postgres
     hostname: postgres
-    image: mdillon/postgis
+    image: mdillon/postgis:11-alpine
     restart: always
     ports:
       - 5432:5432
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=secretpassword
