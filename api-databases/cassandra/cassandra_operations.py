@@ -78,6 +78,8 @@ def insert_data( session ):
 
                     line = fp.readline().strip()
                     cnt += 1
+                    if cnt == 10000:
+                        break
                 else:
                     line = fp.readline().strip()
 

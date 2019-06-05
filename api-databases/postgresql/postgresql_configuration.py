@@ -3,9 +3,8 @@ import psycopg2
 
 def database_configuration( ):
 
-    try:
-        conn = psycopg2.connect( "dbname='postgres' user='postgres' password='password' host='localhost' port='5432'" )
-        return conn.cursor()
-    except:
-        print ( "I am unable to connect to the database" )
-        return
+    conn_string = "host='localhost' dbname='postgres' user='postgres' password='secretpassword' port='5432'"
+
+    connection = psycopg2.connect( conn_string )
+    cursor = connection.cursor()
+    return cursor
