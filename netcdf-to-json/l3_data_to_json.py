@@ -35,7 +35,7 @@ def create_json_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rat
 def create_geojson_from_l3_data( times, latitudes, longitudes, wind_speed, rain_rate, sea_surface_temperature, file_nc ):
     
     with open( file_nc + '.json', 'w' ) as outfile:
-        outfile.write( "{\n\t" + '"'"data"'"' + " : [\n" )
+        outfile.write( "[\n" )
 
         for i in range( 0, len( times ) ):
             t = time_to_string( times[i] )
@@ -56,7 +56,7 @@ def create_geojson_from_l3_data( times, latitudes, longitudes, wind_speed, rain_
         outfile.seek(-2, os.SEEK_END)
         outfile.truncate()
 
-        outfile.write("\n\t]\n}")
+        outfile.write("\n]")
     outfile.close()
 
 

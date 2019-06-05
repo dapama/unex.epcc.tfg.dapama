@@ -5,6 +5,7 @@ sys.path.insert(0, '../utils')
 import path_functions
 sys.path.insert(0, '../utils')
 import data_type_selection
+import time
 
 
 def operations( op, db ):
@@ -55,6 +56,9 @@ def insert_data( db ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
 
+    cnt = 0
+    cnt_i = 0
+
     for json_file in json_files_path_list:
         current_collection = data_type + '_' + path_functions.get_file_name( json_file )
 
@@ -65,9 +69,26 @@ def insert_data( db ):
             collection.add_geo_index( fields = [ 'loc' ] )
             collection.add_hash_index( fields = [ 'time' ] )
 
-        json_docs = json.load( open( json_file ) )
-        for doc in json_docs[ 'data' ]:
-            collection.insert( doc )
+        start_time = time.time()
+
+        with open( json_file ) as fp:  
+            line = fp.readline().strip()
+            while line:
+                if line != '[' and line != ']':
+                    if ( line.endswith(',') ):
+                        line = line[:-1]
+                    doc = json.loads( line )
+
+                    collection.insert( doc )
+
+                    line = fp.readline().strip()
+                    cnt += 1
+                    if cnt == 10000:
+                        cnt = 0
+                        cnt_i = cnt_i + 1
+                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                else:
+                    line = fp.readline().strip()
 
 
 def spatial_querying( db ):

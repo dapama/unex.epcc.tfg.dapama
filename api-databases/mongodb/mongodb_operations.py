@@ -3,6 +3,8 @@ from pymongo import MongoClient, GEOSPHERE, GEO2D
 import os, sys, json, pprint
 sys.path.insert(0, '../utils')
 import path_functions
+import time
+
 
 def operations( op, db ):
     if op == 1:
@@ -45,41 +47,7 @@ def drop_collections( db ):
 
 def insert_data( db ):
 
-    print( "What type of data do you want to insert?\n" )
-    print( "\t1. L3 - WindSAT\n"
-           "\t2. L2B12 - QuikSCAT\n"
-           "\t3. L2B12 - RapidSCAT\n"
-           "\t4. L2 - ASCAT\n" )
-
-    data_type = input()
-
-    print( "What kind of files do you want to insert?\n" )
-    print( "\t1. JSON Files - 2D index\n"
-           "\t2. GEOJSON Files - 2d Sphere index\n" )
-
-    files_format = input()
-
-    if files_format == 1:
-        files_format = 'json-files'
-    elif files_format == 2:
-        files_format = 'geojson-files'
-    else:
-        return
-
-    if data_type == 1:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/windsat-l3' )
-        data_type = 'WINDSCAT'
-    elif data_type == 2:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/quikscat-l2b12' )
-        data_type = 'QUIKSCAT'
-    elif data_type == 3:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/rapidscat-l2b12' )
-        data_type = 'RAPIDSCAT'
-    elif data_type == 4:
-        json_files_path_list = path_functions.get_json_files( '../../ftp-data/' + files_format + '/ascat-l2' )
-        data_type = 'ASCAT'
-    else:
-        return
+    json_files_path_list, data_type = data_type_selection.data_type_selection()
 
     for json_file in json_files_path_list:
         current_collection = data_type + '_' + path_functions.get_file_name( json_file )
@@ -89,9 +57,26 @@ def insert_data( db ):
             collection = db[ current_collection ]
             collection.create_index([( "loc", GEO2D )])
 
-            json_docs = json.load( open( json_file ) )
-            for doc in json_docs['data']:
-                collection.insert( doc )
+        start_time = time.time()
+
+        with open( json_file ) as fp:  
+            line = fp.readline().strip()
+            while line:
+                if line != '[' and line != ']':
+                    if ( line.endswith(',') ):
+                        line = line[:-1]
+                    doc = json.loads( line )
+
+                    collection.insert( doc )
+
+                    line = fp.readline().strip()
+                    cnt += 1
+                    if cnt == 10000:
+                        cnt = 0
+                        cnt_i = cnt_i + 1
+                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                else:
+                    line = fp.readline().strip()
 
 
 def spatial_querying( db ):

@@ -16,16 +16,16 @@ def operations( op, cur ):
     elif op == 3:
         # Insert data
         insert_data( cur )
-    # elif op == 4:
-    #     # Retrieve data
-    #     retrieve_data( session )
+    elif op == 4:
+        # Retrieve data
+        retrieve_data( cur )
 
 
 def create_table( cur ):
     
     cur.execute("""
-        CREATE TABLE netcdf_data (
-            loc VARCHAR(255),
+        CREATE TABLE IF NOT EXISTS netcdf_data (
+            loc GEOMETRY(Point,312),
             time INTEGER NOT NULL,
             wind_speed REAL NOT NULL,
             rain_rate REAL NOT NULL,
@@ -33,7 +33,7 @@ def create_table( cur ):
             PRIMARY KEY (loc , time)
         );"""
     )
-
+    
 
 def drop_table( cur ):
 
@@ -45,31 +45,51 @@ def drop_table( cur ):
 
 def insert_data( cur ):
 
-    json_files_path_list, data_type = data_type_selection.data_type_selection()
-    cnt = 1
+    # postgres_insert_query = """ 
+    # INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature) 
+    # VALUES (ST_GeomFromText('POINT(-71.060316 48.432044), 4326'), '05062019', '0.0', '0.0', '0.0');
+    # """
+    # custom_record_to_insert = ( ST_GeomFromText('POINT(-71.060316 48.432044), 4326'), '05062019', '0.0', '0.0', '0.0' )
 
-    for json_file in json_files_path_list:
+    cur.execute( """ 
+    INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature) 
+    VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312 ), '05062019', '0.0', '0.0', '0.0');
+    """ )
 
-        with open( json_file ) as fp:  
-            line = fp.readline().strip()
-            while line:
-                if line != '[' and line != ']':
-                    if ( line.endswith(',') ):
-                        line = line[:-1]
-                    doc = json.loads( line )
+    # json_files_path_list, data_type = data_type_selection.data_type_selection()
+    # cnt = 1
 
-                    postgres_insert_query = """ 
-                    INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature) 
-                    VALUES (%s, %s, %s, %s, %s)
-                    """
-                    record_to_insert = (str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], 
-                    doc['wind_speed'], doc['rain_rate'], doc['surface_temperature'])
-                    cur.execute( postgres_insert_query, record_to_insert )
+    # for json_file in json_files_path_list:
 
-                    line = fp.readline().strip()
-                    cnt += 1
-                    if cnt == 10000:
-                        break
-                else:
-                    line = fp.readline().strip()
+    #     with open( json_file ) as fp:  
+    #         line = fp.readline().strip()
+    #         while line:
+    #             if line != '[' and line != ']':
+    #                 if ( line.endswith(',') ):
+    #                     line = line[:-1]
+    #                 doc = json.loads( line )
 
+    #                 postgres_insert_query = """ 
+    #                 INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature) 
+    #                 VALUES (%s, %s, %s, %s, %s)
+    #                 """
+    #                 record_to_insert = (str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], 
+    #                 doc['wind_speed'], doc['rain_rate'], doc['surface_temperature'])
+
+    #                 custom_record_to_insert = ( ST_GeomFromText('POINT(-71.060316 48.432044)', 4326), '05062019', '0.0', '0.0', '0.0' )
+
+    #                 cur.execute( postgres_insert_query, custom_record_to_insert )
+
+    #                 line = fp.readline().strip()
+    #                 cnt += 1
+    #                 if cnt == 10000:
+    #                     break
+    #             else:
+    #                 line = fp.readline().strip()
+
+
+def retrieve_data( cur ):
+    cur.execute('''
+        SELECT * FROM netcdf_data;
+        '''
+    )
