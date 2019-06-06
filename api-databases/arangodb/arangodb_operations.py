@@ -51,7 +51,6 @@ def drop_collections( db ):
         print 'All collections deleted.'
 
 
-
 def insert_data( db ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
@@ -80,13 +79,14 @@ def insert_data( db ):
                     doc = json.loads( line )
 
                     collection.insert( doc )
+                    # print (doc)
 
                     line = fp.readline().strip()
-                    cnt += 1
+                    cnt = cnt + 1
                     if cnt == 10000:
-                        cnt = 0
                         cnt_i = cnt_i + 1
                         print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                        cnt = 0
                 else:
                     line = fp.readline().strip()
 

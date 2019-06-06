@@ -54,7 +54,7 @@ def drop_table( session ):
 def insert_data( session ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
-    cnt = 1
+    cnt = 0
 
     for json_file in json_files_path_list:
 
