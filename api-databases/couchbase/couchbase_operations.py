@@ -5,6 +5,7 @@ import os, sys, json, pprint
 sys.path.insert(0, '../utils')
 import path_functions
 import data_type_selection
+import time
 
 
 def operations( op, cb ):
@@ -14,9 +15,6 @@ def operations( op, cb ):
     elif op == 2:
         # Insert data (JSON or GEOJSON) into any Bucket
         insert_data( cb )
-    elif op == 3:
-        # Create N1QL index into a Bucket
-        create_index( cb )
 
 
 def print_bucket_documents( cb ):
@@ -27,13 +25,31 @@ def insert_data( cb ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
 
-    for json_file in json_files_path_list:
-        json_docs = json.load( open( json_file ) )
-        for doc in json_docs['data']:
-            index = str( doc['time'] ) + '_' + str( doc['loc'][0] ) + str( doc['loc'][1] )
-            rv = cb.insert( index, doc )
-            print ( rv )
-        
+    cnt = 0
+    cnt_i = 0
 
-def create_index( cb ):
-    cb.n1ql_query('CREATE PRIMARY INDEX ON TFG_NetCDF(loc)').execute()
+    for json_file in json_files_path_list:
+
+        start_time = time.time()
+
+        with open( json_file ) as fp:  
+            line = fp.readline().strip()
+            while line:
+                if line != '[' and line != ']':
+                    if ( line.endswith(',') ):
+                        line = line[:-1]
+                    doc = json.loads( line )
+
+                    index = str( doc['time'] ) + '_' + str( doc['loc'][0] ) + str( doc['loc'][1] )
+                    cb.insert( index, doc )
+                    # print (doc)
+
+                    line = fp.readline().strip()
+                    cnt = cnt + 1
+                    if cnt == 10000:
+                        cnt_i = cnt_i + 1
+                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                        cnt = 0
+                else:
+                    line = fp.readline().strip()      
+

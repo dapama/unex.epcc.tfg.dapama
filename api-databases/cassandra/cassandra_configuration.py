@@ -12,7 +12,7 @@ def database_configuration( ):
 
     session.execute( """
         CREATE KEYSPACE IF NOT EXISTS %s
-        WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '2' }
+        WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1' }
         """ % KEYSPACE )
 
     session.set_keyspace( KEYSPACE )

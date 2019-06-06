@@ -7,4 +7,4 @@ def database_configuration( ):
 
     connection = psycopg2.connect( conn_string )
     cursor = connection.cursor()
-    return cursor
+    return cursor, connection

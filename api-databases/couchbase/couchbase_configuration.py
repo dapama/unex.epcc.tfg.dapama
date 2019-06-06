@@ -1,6 +1,7 @@
 
 from couchbase.cluster import Cluster
 from couchbase.cluster import PasswordAuthenticator
+from couchbase.admin import Admin
 
 """
 First to all, it's necessary to create an user-admin from your local browser into VagrantIP:CouchBasePORT 
@@ -20,7 +21,7 @@ bucket_name                 = 'TFG_NetCDF'
 
 def database_configuration( ):
 
-    cluster = Cluster( couchbase_endpoint )
-    cluster.authenticate( PasswordAuthenticator( username, password ) )
-    cb = cluster.open_bucket( bucket_name )
-    return cb
+     cluster = Cluster( couchbase_endpoint )
+     cluster.authenticate( PasswordAuthenticator( username, password ) )
+     cb = cluster.open_bucket( bucket_name )
+     return cb

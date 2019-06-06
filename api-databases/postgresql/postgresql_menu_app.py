@@ -7,7 +7,7 @@ def init():
    
    print( "Welcome to the PostgreSQL Application Main Menu!\n" )
    
-   cur = database_configuration( )
+   cur, conn = database_configuration( )
 
    op = -1
    while op != 0:
@@ -16,12 +16,14 @@ def init():
       print( "\t1. Create Table\n"
              "\t2. Drop Table\n"
              "\t3. Insert Data\n"
-             "\t4. Retrieve Data\n"
+             "\t4. Retrieve Data - Spatial Query\n"
+             "\t5. Retrieve Data - Temporal Query\n"
+             "\t6. Retrieve Data - Spatial-Temporal Query\n"
              "\t0. Exit\n" )
 
       op = input()
 
-      operations( op, cur )
+      operations( op, cur, conn )
       
    print( "Bye!\n" )
 
