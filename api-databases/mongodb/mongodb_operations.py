@@ -52,6 +52,7 @@ def insert_data( db ):
 
     cnt = 0
     cnt_i = 0
+    start_time = time.time()
 
     for json_file in json_files_path_list:
         current_collection = data_type + '_' + path_functions.get_file_name( json_file )
@@ -60,8 +61,6 @@ def insert_data( db ):
         if current_collection not in collection_list:
             collection = db[ current_collection ]
             collection.create_index([( "loc", GEO2D )])
-
-        start_time = time.time()
 
         with open( json_file ) as fp:  
             line = fp.readline().strip()
@@ -84,69 +83,91 @@ def insert_data( db ):
 
 
 def spatial_querying( db ):
+
+    start_time = time.time()
+
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
 
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}})
-        ), 'TIME: ', ( time.time() - start_time ))
+        print( 'RETRIEVED DOCS: ',
+            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}})
+        , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_querying( db ):
+    
+    start_time = time.time()
+
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
 
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find({"time": 2009001})
-        ), 'TIME: ', ( time.time() - start_time ))
+        print( 'RETRIEVED DOCS: ',
+            collection.count_documents({"time": 2009001})
+        , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_spatial_querying( db ):
+
+    start_time = time.time()
+    
+    collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
 
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}, "time": 2009001} )
-        ), 'TIME: ', ( time.time() - start_time ))
+        print( 'RETRIEVED DOCS: ',
+            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}, "time": 2009001} )
+        , 'TIME: ', ( time.time() - start_time ))
 
 
 def spatial_querying_2d_sphere( db ):
+
+    start_time = time.time()
+
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[ current_collection ]
 
-        docs = collection.find(
+        print( 'RETRIEVED DOCS: ',
+            collection.count_documents(
                 {"geometry": {
                     "$geoWithin": {
                         "$geometry": {
                             "type": "Polygon",
                             "coordinates": [ [ [-77.49, -89.70], [0.00, 0.00], [10.00, 10.00], [-77.49, -89.70] ] ]
                         }}}})
-            # pprint.pprint( doc )
-
-        print( 'RETRIEVED DOCS: ', len(docs), 'TIME: ', ( time.time() - start_time ))
+        , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_querying_2d_sphere( db ):
+
+    start_time = time.time()
+
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
-        for doc in collection.find( {"properties.time": 2009002} ).limit(3):
-            pprint.pprint( doc )
+
+        print( 'RETRIEVED DOCS: ',
+            collection.count_documents( {"properties.time": 2009002} )
+        , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_spatial_querying_2d_sphere( db ):
+
+    start_time = time.time()
+
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
-
-        for doc in collection.find(
+        
+        print( 'RETRIEVED DOCS: ', 
+            collection.count_documents(
                 {"geometry": {
                     "$geoWithin": {
                         "$geometry": {
                             "type": "Polygon",
                             "coordinates": [ [ [-77.49, -89.70], [0.00, 0.00], [10.00, 10.00], [-77.49, -89.70] ] ]
-                        }}}, "properties.time": 2009003} ):
-            pprint.pprint( doc )
+                        }}}, "properties.time": 2009003} )
+        , 'TIME: ', ( time.time() - start_time ))
+

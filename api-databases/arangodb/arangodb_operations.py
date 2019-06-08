@@ -57,6 +57,7 @@ def insert_data( db ):
 
     cnt = 0
     cnt_i = 0
+    start_time = time.time()
 
     for json_file in json_files_path_list:
         current_collection = data_type + '_' + path_functions.get_file_name( json_file )
@@ -67,8 +68,6 @@ def insert_data( db ):
             collection = db.create_collection( current_collection )
             collection.add_geo_index( fields = [ 'loc' ] )
             # collection.add_hash_index( fields = [ 'time' ] )
-
-        start_time = time.time()
 
         with open( json_file ) as fp:  
             line = fp.readline().strip()

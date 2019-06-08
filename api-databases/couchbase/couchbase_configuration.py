@@ -13,7 +13,7 @@ First to all, it's necessary to create an user-admin from your local browser int
      If you want to add a geospatial index, you need to create it inside the Couchbase console.
 """
 
-couchbase_endpoint          = 'couchbase://localhost:8091'
+couchbase_endpoint          = 'couchbase://localhost'
 username                    = 'admin'
 password                    = 'password'
 bucket_name                 = 'TFG_NetCDF'
