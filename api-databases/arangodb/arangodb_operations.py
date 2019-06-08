@@ -66,7 +66,7 @@ def insert_data( db ):
         else:
             collection = db.create_collection( current_collection )
             collection.add_geo_index( fields = [ 'loc' ] )
-            collection.add_hash_index( fields = [ 'time' ] )
+            # collection.add_hash_index( fields = [ 'time' ] )
 
         start_time = time.time()
 
@@ -92,25 +92,37 @@ def insert_data( db ):
 
 
 def spatial_querying( db ):
-   for current_collection in retrieve_collections( db ):
+
+    start_time = time.time()
+
+    for current_collection in retrieve_collections( db ):
         collection = db.collection( current_collection['name'] )
-           
-        for doc in collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] ):
-            pprint.pprint( doc )
+        
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
+        ), 'TIME: ', ( time.time() - start_time ))
         
 
 def temporal_querying( db ):
+    
+    start_time = time.time()
+
     for current_collection in retrieve_collections( db ):
         collection = db.collection( current_collection['name'] )
 
-        for doc in collection.find({ 'time': 2008366 }):
-            pprint.pprint( doc )
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find({ 'time': 2017365 })
+        ), 'TIME: ', ( time.time() - start_time ))
 
         
 def temporal_spatial_querying( db ):
+
+    start_time = time.time()
+
     for current_collection in retrieve_collections( db ):
         collection = db.collection( current_collection['name'] )
 
-        for doc in collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] ):
-            if doc['time'] == 2008366:
-                pprint.pprint( doc )
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
+            # .find({ 'time': 2017365 })
+        ), 'TIME: ', ( time.time() - start_time ))

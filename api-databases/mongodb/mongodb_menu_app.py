@@ -1,6 +1,6 @@
 
 import os
-from database_configuration import database_configuration
+from mongodb_configuration import database_configuration
 from mongodb_operations import operations
 
 

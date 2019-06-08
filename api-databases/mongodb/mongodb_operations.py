@@ -87,38 +87,46 @@ def spatial_querying( db ):
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
-        for doc in collection.find({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}}).limit(3):
-            pprint.pprint( doc )
+
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}})
+        ), 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_querying( db ):
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
-        for doc in collection.find({"time": 2009001}).limit(3):
-            pprint.pprint( doc )
+
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find({"time": 2009001})
+        ), 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_spatial_querying( db ):
     for current_collection in collection_list:
         collection = db[current_collection]
-        for doc in collection.find(
-                {"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}, "time": 2009001} ).limit(3):
-            pprint.pprint( doc )
+
+        print( 'RETRIEVED DOCS: ', len(
+            collection.find({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}, "time": 2009001} )
+        ), 'TIME: ', ( time.time() - start_time ))
 
 
 def spatial_querying_2d_sphere( db ):
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[ current_collection ]
-        for doc in collection.find(
+
+        docs = collection.find(
                 {"geometry": {
                     "$geoWithin": {
                         "$geometry": {
                             "type": "Polygon",
                             "coordinates": [ [ [-77.49, -89.70], [0.00, 0.00], [10.00, 10.00], [-77.49, -89.70] ] ]
-                        }}}}):
-            pprint.pprint( doc )
+                        }}}})
+            # pprint.pprint( doc )
+
+        print( 'RETRIEVED DOCS: ', len(docs), 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_querying_2d_sphere( db ):
