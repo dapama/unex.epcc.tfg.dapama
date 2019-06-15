@@ -32,12 +32,12 @@ def create_table( cur, conn ):
     
     cur.execute("""
         CREATE TABLE IF NOT EXISTS netcdf_data (
+            doc_id BIGSERIAL PRIMARY KEY,
             loc GEOMETRY(Point,312),
             time INTEGER NOT NULL,
             wind_speed REAL NOT NULL,
             rain_rate REAL NOT NULL,
-            sea_surface_temperature REAL NOT NULL,
-            PRIMARY KEY (loc , time)
+            sea_surface_temperature REAL NOT NULL
         );"""
     )
 
@@ -57,12 +57,13 @@ def insert_data( cur, conn ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
     
+    start_time = time.time()
     cnt = 0
     cnt_i = 0
 
     for json_file in json_files_path_list:
-
-        start_time = time.time()
+        
+        print 'JSON FILE: ', json_file
 
         with open( json_file ) as fp:  
             line = fp.readline().strip()
@@ -83,7 +84,7 @@ def insert_data( cur, conn ):
 
                     line = fp.readline().strip()
                     cnt = cnt + 1
-                    if cnt == 10000:
+                    if cnt == 100000:
                         cnt_i = cnt_i + 1
                         print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
                         cnt = 0

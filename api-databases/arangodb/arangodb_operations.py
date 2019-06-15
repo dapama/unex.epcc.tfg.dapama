@@ -59,14 +59,19 @@ def insert_data( db ):
     cnt_i = 0
     start_time = time.time()
 
-    for json_file in json_files_path_list:
-        current_collection = data_type + '_' + path_functions.get_file_name( json_file )
+    collection = db.create_collection( 'netcdf_Data' )
+    collection.add_geo_index( fields = [ 'loc' ] )
 
-        if db.has_collection( current_collection ):
-            collection = db.collection( current_collection )
-        else:
-            collection = db.create_collection( current_collection )
-            collection.add_geo_index( fields = [ 'loc' ] )
+    for json_file in json_files_path_list:
+
+        print 'JSON FILE: ', json_file
+
+        # current_collection = data_type + '_' + path_functions.get_file_name( json_file )
+        # if db.has_collection( current_collection ):
+        #     collection = db.collection( current_collection )
+        # else:
+        #     collection = db.create_collection( current_collection )
+        #     collection.add_geo_index( fields = [ 'loc' ] )
             # collection.add_hash_index( fields = [ 'time' ] )
 
         with open( json_file ) as fp:  
@@ -82,7 +87,7 @@ def insert_data( db ):
 
                     line = fp.readline().strip()
                     cnt = cnt + 1
-                    if cnt == 10000:
+                    if cnt == 100000:
                         cnt_i = cnt_i + 1
                         print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
                         cnt = 0

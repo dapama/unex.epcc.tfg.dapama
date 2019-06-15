@@ -24,4 +24,5 @@ def database_configuration( ):
      cluster = Cluster( couchbase_endpoint )
      cluster.authenticate( PasswordAuthenticator( username, password ) )
      cb = cluster.open_bucket( bucket_name )
+     cb.operationTimeout=50000000000
      return cb

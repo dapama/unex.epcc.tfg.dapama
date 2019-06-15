@@ -54,13 +54,19 @@ def insert_data( db ):
     cnt_i = 0
     start_time = time.time()
 
-    for json_file in json_files_path_list:
-        current_collection = data_type + '_' + path_functions.get_file_name( json_file )
-        collection_list = db.collection_names()
+    collection = db[ 'netcdf_Data' ]
+    collection.create_index([( "loc", GEO2D )])
 
-        if current_collection not in collection_list:
-            collection = db[ current_collection ]
-            collection.create_index([( "loc", GEO2D )])
+    for json_file in json_files_path_list:
+
+        print 'JSON FILE: ', json_file
+
+        # current_collection = data_type + '_' + path_functions.get_file_name( json_file )
+        # collection_list = db.collection_names()
+
+        # if current_collection not in collection_list:
+        #     collection = db[ current_collection ]
+        #     collection.create_index([( "loc", GEO2D )])
 
         with open( json_file ) as fp:  
             line = fp.readline().strip()
@@ -74,7 +80,7 @@ def insert_data( db ):
 
                     line = fp.readline().strip()
                     cnt = cnt + 1
-                    if cnt == 10000:
+                    if cnt == 100000:
                         cnt_i = cnt_i + 1
                         print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
                         cnt = 0
@@ -84,19 +90,29 @@ def insert_data( db ):
 
 def spatial_querying( db ):
 
+    db.command(
+        {
+            "planCacheClear": "netcdf_Data"
+        }
+    )   
     start_time = time.time()
 
     collection_list = db.collection_names()
     for current_collection in collection_list:
         collection = db[current_collection]
 
-        print( 'RETRIEVED DOCS: ',
-            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}})
+        print( 'RETRIEVED DOCS: ', 
+            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-5.49, -10.30], [0.00, 0.00]]}}})
         , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_querying( db ):
     
+    db.command(
+        {
+            "planCacheClear": "netcdf_Data"
+        }
+    )   
     start_time = time.time()
 
     collection_list = db.collection_names()
@@ -104,12 +120,17 @@ def temporal_querying( db ):
         collection = db[current_collection]
 
         print( 'RETRIEVED DOCS: ',
-            collection.count_documents({"time": 2009001})
+            collection.count_documents({"time": 2017365})
         , 'TIME: ', ( time.time() - start_time ))
 
 
 def temporal_spatial_querying( db ):
 
+    db.command(
+        {
+            "planCacheClear": "netcdf_Data"
+        }
+    )   
     start_time = time.time()
     
     collection_list = db.collection_names()
@@ -117,7 +138,7 @@ def temporal_spatial_querying( db ):
         collection = db[current_collection]
 
         print( 'RETRIEVED DOCS: ',
-            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-77.49, -89.70], [30.00, 0.00]]}}, "time": 2009001} )
+            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-5.49, -10.30], [0.00, 0.00]]}}, "time": 2017365} )
         , 'TIME: ', ( time.time() - start_time ))
 
 

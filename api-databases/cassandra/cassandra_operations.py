@@ -7,6 +7,7 @@ import path_functions
 sys.path.insert(0, '../utils')
 import data_type_selection
 from cassandra.cluster import Cluster
+import time
 
 
 TABLE_NAME = 'netcdf_data'
@@ -54,7 +55,10 @@ def drop_table( session ):
 def insert_data( session ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
+    
     cnt = 0
+    cnt_i = 0
+    start_time = time.time()
 
     for json_file in json_files_path_list:
 
@@ -77,9 +81,11 @@ def insert_data( session ):
                     )
 
                     line = fp.readline().strip()
-                    cnt += 1
-                    if cnt == 10000:
-                        break
+                    cnt = cnt + 1
+                    if cnt == 100000:
+                        cnt_i = cnt_i + 1
+                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                        cnt = 0
                 else:
                     line = fp.readline().strip()
 
