@@ -4,6 +4,7 @@ pip_install_packages:
   - name: netcdf4
   - name: pymongo
   - name: python-arango
+  - name: pyarango
   # sudo yum install python-devel postgresql-devel
   # - name: psycopg2 
   - name: cassandra-driver

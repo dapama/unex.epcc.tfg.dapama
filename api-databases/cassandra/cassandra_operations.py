@@ -11,6 +11,7 @@ import time
 
 
 TABLE_NAME = 'netcdf_data'
+QUERY_WHERE = '-5.49-10.30'
 
 
 def operations( op, session ):
@@ -62,6 +63,8 @@ def insert_data( session ):
 
     for json_file in json_files_path_list:
 
+        print 'JSON FILE: ', json_file
+
         with open( json_file ) as fp:  
             line = fp.readline().strip()
             while line:
@@ -92,9 +95,15 @@ def insert_data( session ):
     
 def retrieve_data( session ):
 
-    rows = session.execute( """SELECT * FROM %s """ % TABLE_NAME )
+    query = session.prepare( """SELECT * FROM netcdf_data""" )
+    # rows = session.execute( query, (2017365,) )
+    rows = session.execute( query, )
     for row in rows:
         print ( row[0], row[1], row[2], row[3] )
+
+    """
+    https://dzone.com/articles/apache-cassandra-and-allow-filtering
+    """
 
 
         

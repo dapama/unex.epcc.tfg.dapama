@@ -13,16 +13,13 @@ First to all, it's necessary to create an user-admin from your local browser int
      If you want to add a geospatial index, you need to create it inside the Couchbase console.
 """
 
-couchbase_endpoint          = 'couchbase://localhost'
-username                    = 'admin'
-password                    = 'password'
-bucket_name                 = 'TFG_NetCDF'
-
 
 def database_configuration( ):
 
-     cluster = Cluster( couchbase_endpoint )
-     cluster.authenticate( PasswordAuthenticator( username, password ) )
-     cb = cluster.open_bucket( bucket_name )
-     cb.operationTimeout=50000000000
+     cluster = Cluster( 'couchbase://localhost:8091' )
+     cluster.authenticate( PasswordAuthenticator( 'admin', 'password' ) )
+     cb = cluster.open_bucket( 'TFG_NetCDF' )
+     cb.OperationTimeout = '90000000000'
+     cb.WaitTimeout = '90000000000'
+     cb.ShutdownTimeout = '90000000000'
      return cb

@@ -1,11 +1,11 @@
 
-from couchbase.cluster import Cluster
 import os, sys, json, pprint
 sys.path.insert(0, '../utils')
 import path_functions
 sys.path.insert(0, '../utils')
 import data_type_selection
 import time
+from arangodb_configuration import database_configuration
 
 
 def operations( op, db ):
@@ -41,14 +41,7 @@ def print_all_collections( db ):
 
 
 def drop_collections( db ):
-    collection_list = retrieve_collections( db )
-
-    if not collection_list:
-        print 'Currently no collections exist.'
-    else:
-        for current_collection in collection_list:
-            db.delete_collection( current_collection['name'] )
-        print 'All collections deleted.'
+    db.dropAllCollections()
 
 
 def insert_data( db ):
@@ -59,20 +52,18 @@ def insert_data( db ):
     cnt_i = 0
     start_time = time.time()
 
-    collection = db.create_collection( 'netcdf_Data' )
-    collection.add_geo_index( fields = [ 'loc' ] )
+    if not db.hasCollection( name  = 'netcdf_data' ):
+        collection = db.createCollection( className = 'Collection', name = 'netcdf_data' )
+        collection.ensureGeoIndex( [ 'loc' ] )
+        print ('GEOSPATIAL INDEX')
+    else:
+        collection = db[ 'netcdf_data' ]
+
+    f = open("arango_doc.txt", "w")
 
     for json_file in json_files_path_list:
 
         print 'JSON FILE: ', json_file
-
-        # current_collection = data_type + '_' + path_functions.get_file_name( json_file )
-        # if db.has_collection( current_collection ):
-        #     collection = db.collection( current_collection )
-        # else:
-        #     collection = db.create_collection( current_collection )
-        #     collection.add_geo_index( fields = [ 'loc' ] )
-            # collection.add_hash_index( fields = [ 'time' ] )
 
         with open( json_file ) as fp:  
             line = fp.readline().strip()
@@ -82,29 +73,41 @@ def insert_data( db ):
                         line = line[:-1]
                     doc = json.loads( line )
 
-                    collection.insert( doc )
-                    # print (doc)
+                    arango_doc = collection.createDocument()
+                    arango_doc['loc'] = doc['loc']
+                    arango_doc['time'] = doc['time']
+                    arango_doc['wind_speed'] = doc['wind_speed']
+                    arango_doc['rain_rate'] = doc['rain_rate']
+                    arango_doc['surface_temperature'] = doc['surface_temperature']
+                    arango_doc.save()
 
                     line = fp.readline().strip()
                     cnt = cnt + 1
                     if cnt == 100000:
                         cnt_i = cnt_i + 1
-                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
+                        # f.write( "%i ' - ' %f\r\n" % ( cnt * cnt_i, time.time() - start_time ))
+                        print( "%i ' - ' %f\r\n" % ( cnt * cnt_i, time.time() - start_time ))
                         cnt = 0
                 else:
                     line = fp.readline().strip()
+    f.close()
 
 
 def spatial_querying( db ):
 
-    start_time = time.time()
+    collection = db[ 'netcdf_data' ]
+    
+    for docs in collection.fetchAll():
+        print ( docs )
 
-    for current_collection in retrieve_collections( db ):
-        collection = db.collection( current_collection['name'] )
+    # start_time = time.time()
+
+    # for current_collection in retrieve_collections( db ):
+    #     collection = db.collection( current_collection['name'] )
         
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
-        ), 'TIME: ', ( time.time() - start_time ))
+    #     print( 'RETRIEVED DOCS: ', len(
+    #         collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
+    #     ), 'TIME: ', ( time.time() - start_time ))
         
 
 def temporal_querying( db ):

@@ -12,10 +12,10 @@ def init():
 
       print( "\n\n\nWhat process do you want to execute?\n" )
       print( "\t1. Create Table\n"
-            "\t2. Drop Table\n"
-            "\t3. Insert Data\n"
-            "\t4. Retrieve Data\n"
-            "\t0. Exit\n" )
+             "\t2. Drop Table\n"
+             "\t3. Insert Data\n"
+             "\t4. Retrieve Data\n"
+             "\t0. Exit\n" )
 
       op = input()
       session = database_configuration( )

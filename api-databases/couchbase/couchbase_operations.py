@@ -46,7 +46,7 @@ def insert_data( cb ):
 
                     line = fp.readline().strip()
                     cnt = cnt + 1
-                    if cnt == 10000:
+                    if cnt == 100000:
                         cnt_i = cnt_i + 1
                         print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
                         cnt = 0
