@@ -45,10 +45,11 @@ def transform_data( op, src_path, dst_path ):
 def get_data_path( op ):
     
     print( "Can you select the path where the data is saved? (SRC)\n" )
-    src_path = '/srv/ftp-data/netcdf-files/windsat-l3'
-    
+    src_path = raw_input()
+    # /srv/ftp-data/netcdf-files/windsat-l3
     print( "Can you select the path where the data will be saved? (DST)\n" )
-    dst_path = '/srv/ftp-data/json-files/windsat-l3'
+    dst_path = raw_input()
+    # /srv/ftp-data/json-files/windsat-l3
     
     if os.path.isdir( src_path ) and os.path.isdir( dst_path ):
         transform_data( op, src_path, dst_path )
@@ -67,7 +68,7 @@ def init():
           "\t5. L2B12 from RapidSCAT / QuikSCAT - GEOJSON FILES\n"
           "\t6. L2 from ASCAT - GEOJSON FILES\n" )
 
-    op = 1
+    op = input()
     get_data_path( op )
 
 

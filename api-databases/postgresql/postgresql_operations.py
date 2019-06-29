@@ -1,3 +1,4 @@
+
 import os, sys, json, pprint, time
 sys.path.insert(0, '../utils')
 import path_functions, data_type_selection, query_parameters_selection
@@ -54,8 +55,8 @@ def insert_data( cur, conn ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
     
-    start_time = time.time()
     cnt, cnt_i = 0, 0
+    start_time = time.time()
 
     with open( '_postgresql_.txt', 'a' ) as outfile:
 
@@ -74,24 +75,26 @@ def insert_data( cur, conn ):
                             line = line[:-1]
                         doc = json.loads( line )
 
-                        # postgres_insert_query = """ 
-                        # INSERT INTO netcdf_data ( loc, time, wind_speed, rain_rate, sea_surface_temperature ) 
-                        # VALUES ( ST_GeomFromText( %s,312 ), %s, %s, %s, %s )
-                        # """
+                        postgres_insert_query = """ 
+                        INSERT INTO netcdf_data ( loc, time, wind_speed, rain_rate, sea_surface_temperature ) 
+                        VALUES ( ST_GeomFromText( %s,312 ), %s, %s, %s, %s )"""
 
-                        # record_to_insert = 'POINT( {0} {1} )'.format( str(doc['loc'][1]), str(doc['loc'][0]) ), 
-                        # str(doc['time']), str(doc['wind_speed']), str(doc['rain_rate']), str(doc['surface_temperature'])
+                        record_to_insert = 'POINT( {0} {1} )'.format( str(doc['loc'][1]), str(doc['loc'][0]) ), 
+                        str(doc['time']), str(doc['wind_speed']), str(doc['rain_rate']), str(doc['surface_temperature'])
 
-                        # cur.execute( postgres_insert_query, record_to_insert )
+                        cur.execute( postgres_insert_query, record_to_insert )
 
                         line = fp.readline().strip()
                         cnt += 1
                         
                         if cnt == 100000:
                             cnt_i += 1
-                            # print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
-                            outfile.write( """\tInserted Docs: """ + str(( cnt * cnt_i )) + 
-                                           """ time: """ + str(( time.time() - start_time )) + """\n""" )
+                            
+                            inserted_docs = str( cnt * cnt_i )
+                            query_time = str( time.time() - start_time )
+
+                            # print( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            outfile.write( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
                             cnt = 0
                             conn.commit()
                     else:
@@ -118,8 +121,8 @@ def retrieve_data_spatial_query( cur ):
         retrieved_docs = str( len( cur.fetchall() ) )
         query_time = str( ( time.time() - start_time ) )
 
-        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + time + """\n""" )
-        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + query_time + """\n""" )
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
 
     outfile.close()
 
@@ -143,8 +146,8 @@ def retrieve_data_temporal_query( cur ):
         retrieved_docs = str( len( cur.fetchall() ) )
         query_time = str( ( time.time() - start_time ) )
 
-        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + time + """\n""" )
-        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + query_time + """\n""" )
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
     
     outfile.close()
 
@@ -171,7 +174,7 @@ def retrieve_data_spatial_temporal_query( cur ):
         retrieved_docs = str( len( cur.fetchall() ) )
         query_time = str( ( time.time() - start_time ) )
 
-        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + time + """\n""" )
-        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // TIME: """ + query_time + """\n""" )
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
 
     outfile.close()

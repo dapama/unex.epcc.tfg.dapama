@@ -1,16 +1,14 @@
 
 from pymongo import MongoClient, GEOSPHERE, GEO2D
-import os, sys, json, pprint
+import os, sys, json, pprint, time
 sys.path.insert(0, '../utils')
-import path_functions
-import time
-import data_type_selection
+import path_functions, data_type_selection, query_parameters_selection
 
 
 def operations( op, db ):
     if op == 1:
         # Print Collections
-        print_collections( db )
+        create_collection( db )
     elif op == 2:
         # Drop Collections
         drop_collections( db )
@@ -26,19 +24,14 @@ def operations( op, db ):
     elif op == 6:
         # Temporal-Spatial Querying using 2D Index
         temporal_spatial_querying( db )
-    elif op == 7:
-        # Spatial Querying using 2D Sphere Index
-        spatial_querying_2d_sphere( db )
-    elif op == 8:
-        # Temporal Querying using 2D Sphere Index
-        temporal_querying_2d_sphere( db )
-    elif op == 9:
-        # Temporal-Spatial Querying using 2D Sphere Index
-        temporal_spatial_querying_2d_sphere( db )
 
 
-def print_collections( db ):
-    print( db.collection_names() )
+def create_collection( db ):
+    
+    if 'netcdf_Data' not in db.collection_names():
+        collection = db[ 'netcdf_Data' ]
+        collection.create_index([( "loc", GEO2D )])
+        # collection.create_index([( "loc", SPHERE2D )])
 
 
 def drop_collections( db ):
@@ -50,145 +43,109 @@ def insert_data( db ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
 
-    cnt = 0
-    cnt_i = 0
+    cnt, cnt_i = 0, 0
     start_time = time.time()
 
     collection = db[ 'netcdf_Data' ]
-    collection.create_index([( "loc", GEO2D )])
 
-    for json_file in json_files_path_list:
+    with open( '_mongodb_.txt', 'a' ) as outfile:
 
-        print 'JSON FILE: ', json_file
+        outfile.write( """\n ---------------- \nINSERTION PROCESS: \n""")
 
-        # current_collection = data_type + '_' + path_functions.get_file_name( json_file )
-        # collection_list = db.collection_names()
+        for json_file in json_files_path_list:
+            
+            # print 'JSON FILE: ', json_file
+            outfile.write( """\t-> Json file: """ + json_file + """\n""" )
 
-        # if current_collection not in collection_list:
-        #     collection = db[ current_collection ]
-        #     collection.create_index([( "loc", GEO2D )])
+            with open( json_file ) as fp:  
+                line = fp.readline().strip()
+                while line:
+                    if line != '[' and line != ']':
+                        if ( line.endswith(',') ):
+                            line = line[:-1]
+                        doc = json.loads( line )
+                        
+                        # collection.insert( doc )
 
-        with open( json_file ) as fp:  
-            line = fp.readline().strip()
-            while line:
-                if line != '[' and line != ']':
-                    if ( line.endswith(',') ):
-                        line = line[:-1]
-                    doc = json.loads( line )
+                        line = fp.readline().strip()
+                        cnt += 1
+                        if cnt == 100000:
+                            cnt_i += 1
 
-                    collection.insert( doc )
+                            inserted_docs = str( cnt * cnt_i )
+                            query_time = str( time.time() - start_time )
 
-                    line = fp.readline().strip()
-                    cnt = cnt + 1
-                    if cnt == 100000:
-                        cnt_i = cnt_i + 1
-                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
-                        cnt = 0
-                else:
-                    line = fp.readline().strip()
+                            # print( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            outfile.write( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            cnt = 0
+                    else:
+                        line = fp.readline().strip()
+    f.close()
 
 
 def spatial_querying( db ):
 
-    db.command(
-        {
-            "planCacheClear": "netcdf_Data"
-        }
-    )   
+    lat1, long1, lat2, long2 = query_parameters_selection.ask_for_a_query_box()
+    
     start_time = time.time()
 
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[current_collection]
+    collection = db[ 'netcdf_Data' ]
 
-        print( 'RETRIEVED DOCS: ', 
-            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-5.49, -10.30], [0.00, 0.00]]}}})
-        , 'TIME: ', ( time.time() - start_time ))
+    with open( '_mongodb_.txt', 'a' ) as outfile:
+
+        outfile.write( """\n ---------------- \nSPATIAL QUERY: [ [""" + lat1 + """, """ + long1 + """] [""" + lat2 + """, """ + long2 + """] ]""")
+
+        retrieved_docs = str( collection.count_documents({"loc": {"$geoWithin": {"$box": [[float( lat1 ), float( long1 )], [float( lat2 ), float( long2 )]] }}}) )
+        query_time = str( ( time.time() - start_time ) )
+
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+
+    outfile.close()
 
 
 def temporal_querying( db ):
-    
-    db.command(
-        {
-            "planCacheClear": "netcdf_Data"
-        }
-    )   
+
+    dates = query_parameters_selection.ask_for_a_query_date()
+
     start_time = time.time()
 
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[current_collection]
+    collection = db[ 'netcdf_Data' ]
 
-        print( 'RETRIEVED DOCS: ',
-            collection.count_documents({"time": 2017365})
-        , 'TIME: ', ( time.time() - start_time ))
+    with open( '_mongodb_.txt', 'a' ) as outfile:
+
+        outfile.write( """\n ---------------- \nTEMPORAL QUERY: [ """ + ', '.join( str(d) for d in dates ) + """ ]""")
+
+        retrieved_docs = str( collection.count_documents( {"time": { "$in": dates }} ) )
+        query_time = str( ( time.time() - start_time ) )
+
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+
+    outfile.close()
 
 
 def temporal_spatial_querying( db ):
 
-    db.command(
-        {
-            "planCacheClear": "netcdf_Data"
-        }
-    )   
+    lat1, long1, lat2, long2 = query_parameters_selection.ask_for_a_query_box()
+    dates = query_parameters_selection.ask_for_a_query_date()
+
     start_time = time.time()
     
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[current_collection]
+    collection = db[ 'netcdf_Data' ]
+    with open( '_mongodb_.txt', 'a' ) as outfile:
 
-        print( 'RETRIEVED DOCS: ',
-            collection.count_documents({"loc": {"$geoWithin": {"$box": [[-5.49, -10.30], [0.00, 0.00]]}}, "time": 2017365} )
-        , 'TIME: ', ( time.time() - start_time ))
+        outfile.write( """\n ---------------- \nSPATIAL-TEMPORAL QUERY: [ [""" +
+                       lat1 + """, """ + long1 + """] [""" + lat2 + """, """ + long2 + """] ]""" +
+                       """ && [ """ + ', '.join( str(d) for d in dates ) + """ ]""")
 
+        retrieved_docs = str( collection.count_documents( {
+            "loc": {"$geoWithin": {"$box": [[float( lat1 ), float( long1 )], [float( lat2 ), float( long2 )]] }}, 
+            "time": { "$in": dates }}
+            ) )
+        query_time = str( time.time() - start_time )
 
-def spatial_querying_2d_sphere( db ):
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
 
-    start_time = time.time()
-
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[ current_collection ]
-
-        print( 'RETRIEVED DOCS: ',
-            collection.count_documents(
-                {"geometry": {
-                    "$geoWithin": {
-                        "$geometry": {
-                            "type": "Polygon",
-                            "coordinates": [ [ [-77.49, -89.70], [0.00, 0.00], [10.00, 10.00], [-77.49, -89.70] ] ]
-                        }}}})
-        , 'TIME: ', ( time.time() - start_time ))
-
-
-def temporal_querying_2d_sphere( db ):
-
-    start_time = time.time()
-
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[current_collection]
-
-        print( 'RETRIEVED DOCS: ',
-            collection.count_documents( {"properties.time": 2009002} )
-        , 'TIME: ', ( time.time() - start_time ))
-
-
-def temporal_spatial_querying_2d_sphere( db ):
-
-    start_time = time.time()
-
-    collection_list = db.collection_names()
-    for current_collection in collection_list:
-        collection = db[current_collection]
-        
-        print( 'RETRIEVED DOCS: ', 
-            collection.count_documents(
-                {"geometry": {
-                    "$geoWithin": {
-                        "$geometry": {
-                            "type": "Polygon",
-                            "coordinates": [ [ [-77.49, -89.70], [0.00, 0.00], [10.00, 10.00], [-77.49, -89.70] ] ]
-                        }}}, "properties.time": 2009003} )
-        , 'TIME: ', ( time.time() - start_time ))
-
+    outfile.close()
