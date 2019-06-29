@@ -6,8 +6,6 @@ from mongodb_operations import operations
 
 def init():
 
-    print( "Welcome to the ArangoDB Application Main Menu!\n" )
-
     db = database_configuration( 27017, 'netcdf_data' )
 
     op = -1
