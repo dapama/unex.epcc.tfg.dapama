@@ -1,10 +1,7 @@
 
-import os, sys, json, pprint
+import os, sys, json, pprint, time
 sys.path.insert(0, '../utils')
-import path_functions
-sys.path.insert(0, '../utils')
-import data_type_selection
-import time
+import data_type_selection, path_functions, query_parameters_selection
 from arangodb_configuration import database_configuration
 
 
@@ -48,88 +45,105 @@ def insert_data( db ):
 
     json_files_path_list, data_type = data_type_selection.data_type_selection()
 
-    cnt = 0
-    cnt_i = 0
+    cnt, cnt_i = 0, 0
     start_time = time.time()
 
-    if not db.hasCollection( name  = 'netcdf_data' ):
-        collection = db.createCollection( className = 'Collection', name = 'netcdf_data' )
-        collection.ensureGeoIndex( [ 'loc' ] )
-        print ('GEOSPATIAL INDEX')
+    if not db.has_collection( name  = 'netcdf_data' ):
+        collection = db.create_collection( className = 'Collection', name = 'netcdf_data' )
+        index = collection.add_geo_index(fields=['loc'])
     else:
-        collection = db[ 'netcdf_data' ]
+        collection = db.collection( 'netcdf_data' )
 
-    f = open("arango_doc.txt", "w")
+    with open( '_arangodb_.txt', 'a' ) as outfile:
 
-    for json_file in json_files_path_list:
+        outfile.write( """\n ---------------- \nINSERTION PROCESS: \n""")
 
-        print 'JSON FILE: ', json_file
+        for json_file in json_files_path_list:
+            
+            # print 'JSON FILE: ', json_file
+            outfile.write( """\t-> Json file: """ + json_file + """\n""" )
 
-        with open( json_file ) as fp:  
-            line = fp.readline().strip()
-            while line:
-                if line != '[' and line != ']':
-                    if ( line.endswith(',') ):
-                        line = line[:-1]
-                    doc = json.loads( line )
+            with open( json_file ) as fp:  
+                line = fp.readline().strip()
+                while line:
+                    if line != '[' and line != ']':
+                        if ( line.endswith(',') ):
+                            line = line[:-1]
+                        doc = json.loads( line )
+                        
+                        arango_doc = collection.createDocument()
+                        arango_doc['loc'] = doc['loc']
+                        arango_doc['time'] = doc['time']
+                        arango_doc['wind_speed'] = doc['wind_speed']
+                        arango_doc['rain_rate'] = doc['rain_rate']
+                        arango_doc['surface_temperature'] = doc['surface_temperature']
+                        arango_doc.save()
 
-                    arango_doc = collection.createDocument()
-                    arango_doc['loc'] = doc['loc']
-                    arango_doc['time'] = doc['time']
-                    arango_doc['wind_speed'] = doc['wind_speed']
-                    arango_doc['rain_rate'] = doc['rain_rate']
-                    arango_doc['surface_temperature'] = doc['surface_temperature']
-                    arango_doc.save()
+                        line = fp.readline().strip()
+                        cnt += 1
+                        if cnt == 100000:
+                            cnt_i += 1
 
-                    line = fp.readline().strip()
-                    cnt = cnt + 1
-                    if cnt == 100000:
-                        cnt_i = cnt_i + 1
-                        # f.write( "%i ' - ' %f\r\n" % ( cnt * cnt_i, time.time() - start_time ))
-                        print( "%i ' - ' %f\r\n" % ( cnt * cnt_i, time.time() - start_time ))
-                        cnt = 0
-                else:
-                    line = fp.readline().strip()
+                            inserted_docs = str( cnt * cnt_i )
+                            query_time = str( time.time() - start_time )
+
+                            # print( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            outfile.write( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            cnt = 0
+                    else:
+                        line = fp.readline().strip()
     f.close()
 
 
 def spatial_querying( db ):
 
-    collection = db[ 'netcdf_data' ]
-    
-    for docs in collection.fetchAll():
-        print ( docs )
-
-    # start_time = time.time()
-
-    # for current_collection in retrieve_collections( db ):
-    #     collection = db.collection( current_collection['name'] )
-        
-    #     print( 'RETRIEVED DOCS: ', len(
-    #         collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
-    #     ), 'TIME: ', ( time.time() - start_time ))
-        
-
-def temporal_querying( db ):
+    lat1, long1, lat2, long2 = query_parameters_selection.ask_for_a_query_box()
     
     start_time = time.time()
 
-    for current_collection in retrieve_collections( db ):
-        collection = db.collection( current_collection['name'] )
+    collection = db[ 'netcdf_data' ]
 
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find({ 'time': 2017365 })
-        ), 'TIME: ', ( time.time() - start_time ))
+    with open( '_arangodb_.txt', 'a' ) as outfile:
+
+        outfile.write( """\n ---------------- \nSPATIAL QUERY: [ [""" + lat1 + """, """ + long1 + """] [""" + lat2 + """, """ + long2 + """] ]""")
+
+        cursor_docs = collection.find_in_box( float( lat1 ), float( long1 ), float( lat2 ), float( long2 ), 0, 0, collection.indexes( )[1]['id'] )
+        query_time = str( ( time.time() - start_time ) )
+
+        # print( """\n\tRetrieved Docs: """ + retrieved_docs + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + str( cursor_docs.count() ) + """ // Time: """ + query_time + """\n""" )
+
+    outfile.close()
+        
+
+def temporal_querying( db ):
+
+    start_time = time.time()
+
+    collection = db[ 'netcdf_data' ]
+
+    with open( '_arangodb_.txt', 'a' ) as outfile:
+
+        outfile.write( """\n ---------------- \nTEMPORAL QUERY: """)
+
+        """ To custom this query you must to introduce the range by writting it on the line below """
+        cursor_docs = collection.find_in_range( "time", 2017365, 2018006 )
+        query_time = str( ( time.time() - start_time ) )
+
+        # print( """\n\tRetrieved Docs: """ + str( cursor_docs.count() ) + """ // Time: """ + query_time + """\n""" )
+        outfile.write(  """\n\tRetrieved Docs: """ + str( cursor_docs.count() ) + """ // Time: """ + query_time + """\n""" )
+
+    outfile.close()
 
         
 def temporal_spatial_querying( db ):
 
     start_time = time.time()
 
-    for current_collection in retrieve_collections( db ):
-        collection = db.collection( current_collection['name'] )
+    """ This query cannot be created because Arango doesn't allow query concatenations """
 
-        print( 'RETRIEVED DOCS: ', len(
-            collection.find_in_box( -77.49, -89.30, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
-            # .find({ 'time': 2017365 })
-        ), 'TIME: ', ( time.time() - start_time ))
+    # for current_collection in retrieve_collections( db ):
+    #     collection = db.collection( current_collection['name'] )
+    #     collection.find_in_box( -5.49, -10.40, 0.00, 0.00, 0, 0, collection.indexes( )[1]['id'] )
+        
+    print( 'TIME: ', ( time.time() - start_time ))
