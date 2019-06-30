@@ -65,7 +65,7 @@ def insert_data( db ):
                             line = line[:-1]
                         doc = json.loads( line )
                         
-                        # collection.insert( doc )
+                        collection.insert( doc )
 
                         line = fp.readline().strip()
                         cnt += 1

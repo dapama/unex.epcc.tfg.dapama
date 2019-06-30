@@ -61,45 +61,61 @@ def insert_data( session ):
     cnt_i = 0
     start_time = time.time()
 
-    for json_file in json_files_path_list:
+    with open( '_cassandra_.txt', 'a' ) as outfile:
 
-        print 'JSON FILE: ', json_file
+        outfile.write( """\n ---------------- \nINSERTION PROCESS: \n""")
 
-        with open( json_file ) as fp:  
-            line = fp.readline().strip()
-            while line:
-                if line != '[' and line != ']':
-                    if ( line.endswith(',') ):
-                        line = line[:-1]
-                    doc = json.loads( line )
+        for json_file in json_files_path_list:
+            
+            # print 'JSON FILE: ', json_file
+            outfile.write( """\t-> Json file: """ + json_file + """\n""" )
 
-                    session.execute(
-                        """
-                        INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature)
-                        VALUES (%s, %s, %s, %s, %s)
-                        """,
-                        ( str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], doc['wind_speed'], 
-                            doc['rain_rate'], doc['surface_temperature'] 
+            with open( json_file ) as fp:  
+                line = fp.readline().strip()
+                while line:
+                    if line != '[' and line != ']':
+                        if ( line.endswith(',') ):
+                            line = line[:-1]
+                        doc = json.loads( line )
+
+                        session.execute(
+                            """
+                            INSERT INTO netcdf_data (loc, time, wind_speed, rain_rate, sea_surface_temperature)
+                            VALUES (%s, %s, %s, %s, %s)
+                            """,
+                            ( str(doc['loc'][0]) + str(doc['loc'][1]), doc['time'], doc['wind_speed'], 
+                                doc['rain_rate'], doc['surface_temperature'] 
+                            )
                         )
-                    )
 
-                    line = fp.readline().strip()
-                    cnt = cnt + 1
-                    if cnt == 100000:
-                        cnt_i = cnt_i + 1
-                        print( 'INSERTED DOCS: ', ( cnt * cnt_i ), 'TIME: ', ( time.time() - start_time ))
-                        cnt = 0
-                else:
-                    line = fp.readline().strip()
+                        line = fp.readline().strip()
+                        cnt += 1
+                        if cnt == 100000:
+                            cnt_i += 1
+
+                            inserted_docs = str( cnt * cnt_i )
+                            query_time = str( time.time() - start_time )
+
+                            # print( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            outfile.write( """\tInserted Docs: """ + inserted_docs + """ // Time: """ + query_time + """\n""" )
+                            
+                            cnt = 0
+                    else:
+                        line = fp.readline().strip()
+    f.close()
 
     
 def retrieve_data( session ):
 
-    query = session.prepare( """SELECT * FROM netcdf_data""" )
-    # rows = session.execute( query, (2017365,) )
-    rows = session.execute( query, )
-    for row in rows:
-        print ( row[0], row[1], row[2], row[3] )
+    start_time = time.time()
+
+    query = """SELECT * FROM netcdf_data WHERE time=%s"""
+    rows = session.execute_async(query, [2017365])
+    
+    for row in rows.result():
+        print ( row[0] )
+    print( 'TIME: ', ( time.time() - start_time ))
+
 
     """
     https://dzone.com/articles/apache-cassandra-and-allow-filtering
