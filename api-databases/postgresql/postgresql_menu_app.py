@@ -12,13 +12,13 @@ def init():
    op = -1
    while op != 0:
 
-      print( """\n\n\nWhat process do you want to execute?\n
-               \t1. Create Table\n
-               \t2. Drop Table\n
-               \t3. Insert Data\n
-               \t4. Retrieve Data - Spatial Query\n
-               \t5. Retrieve Data - Temporal Query\n
-               \t6. Retrieve Data - Spatial-Temporal Query\n
+      print( """\n\n\nWhat process do you want to execute?
+               \t1. Create Table
+               \t2. Drop Table
+               \t3. Insert Data
+               \t4. Retrieve Data - Spatial Query
+               \t5. Retrieve Data - Temporal Query
+               \t6. Retrieve Data - Spatial-Temporal Query
                \t0. Exit\n""" )
 
       op = input()
